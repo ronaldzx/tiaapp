@@ -1,0 +1,654 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.btn-circle.btn-xl {
+  width: 150px;
+  height: 150px;
+  padding: 10px 16px;
+  border-radius: 100px;
+  font-size: 48px;
+  line-height: 1.33;
+}
+.btn-circle.btn-xl.btn-df{
+  width: 80px;
+  height: 80px;
+  font-size: 48px;
+}
+
+.btn-circle {
+  width: 30px;
+  height: 30px;
+  padding: 6px 0px;
+  border-radius: 15px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.42857;
+}
+
+.btn-circle-download {
+  position: relative;
+  height: 170px; /*48*/
+  width: 170px; /*48*/
+  margin: auto;
+  border-radius: 100%;
+  background: #E8EAED;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+/*cross*/
+.btn-circle-download#delete {
+  position: relative;
+  height: 170px; /*48*/
+  width: 170px; /*48*/
+  margin: auto;
+  border-radius: 100%;
+  background: #e9cbcb;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+.btn-circle-download:after {
+  content: "";
+  position: relative;
+  display: block;
+  width: 200%;
+  height: 100%;
+  background-image: linear-gradient(100deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0));
+  transform: translateX(-100%);
+}
+.btn-circle-download svg {
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+.btn-circle-download svg#border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  stroke: none;
+  stroke-dasharray: 144;
+  stroke-dashoffset: 144;
+  transition: all 0.9s linear;
+  width : 170px;
+  height: 170px;
+}
+/*cross*/
+.btn-circle-download svg#borderc {
+  position: absolute;
+  top: 0;
+  left: 0;
+  stroke: none;
+  stroke-dasharray: 144;
+  stroke-dashoffset: 144;
+  transition: all 0.9s linear;
+  width: 170px;
+  height: 170px;
+}
+.btn-circle-download svg#arrow {
+  stroke-width: 1;
+  position: absolute;
+  top: 19px;
+  left: 37px;
+  stroke: #9098A9;
+  transition: all 0.2s ease;
+  width : 90px;
+  height: 120px;
+}
+/* cross */
+.btn-circle-download svg#cross {
+  stroke-width: 3 ;
+  position: absolute;
+  top: 19px;
+  left: 37px;
+  stroke: #9098A9;
+  transition: all 0.2s ease;
+  width: 90px;
+  height: 120px;
+}
+
+.btn-circle-download svg#check {
+  stroke-width: 2;
+  position: absolute;
+  top: 22px;
+  left: 37px;
+  stroke: white;
+  transform: scale(0);
+  width: 90px;
+  height: 120px;
+}
+.btn-circle-download:hover {
+  background: rgba(145, 203, 236, 0.562);
+}
+/*cross*/
+.btn-circle-download#delete:hover {
+  background: #fdb9b0b4;
+}
+.btn-circle-download:hover #arrow path,
+.btn-circle-download:hover #arrow polyline {
+  stroke: #0077FF;
+}
+/*cross*/
+.btn-circle-download:hover #cross path,
+.btn-circle-download:hover #cross polyline {
+  stroke: #da2424;
+}
+.btn-circle-download.load {
+  background: rgba(0, 119, 255, 0.2);
+}
+.btn-circle-download.load #arrow path,
+.btn-circle-download.load #arrow polyline {
+  stroke: #0077FF;
+}
+/*cross*/
+.btn-circle-download.load #cross path,
+.btn-circle-download.load #cross polyline {
+  stroke: #da2424;
+}
+.btn-circle-download.load #border {
+  stroke: #0077FF;
+  stroke-dasharray: 144;
+  stroke-dashoffset: 0;
+}
+/*cross*/
+.btn-circle-download.load #borderc {
+  stroke: #da2424;
+  stroke-dasharray: 144;
+  stroke-dashoffset: 0;
+}
+.btn-circle-download.done#add {
+  background: #0077FF;
+  animation: rubberBand 0.8s;
+}
+/*cross*/
+.btn-circle-download.done#delete {
+  background: #da2424;
+  animation: rubberBand 0.8s;
+}
+.btn-circle-download.done:after {
+  transform: translateX(50%);
+  transition: transform 0.4s ease;
+  transition-delay: 0.7s;
+}
+.btn-circle-download.done #border,
+.btn-circle-download.done #arrow {
+  display: none;
+}
+/*cross*/
+.btn-circle-download.done #border,
+.btn-circle-download.done #cross {
+  display: none;
+}
+.btn-circle-download.done #check {
+  transform: scale(1);
+  transition: all 0.2s ease;
+  transition-delay: 0.2s;
+}
+
+@keyframes rubberBand {
+  from {
+    transform: scale(1, 1, 1);
+  }
+  30% {
+    transform: scale3d(1.15, 0.75, 1);
+  }
+  40% {
+    transform: scale3d(0.75, 1.15, 1);
+  }
+  50% {
+    transform: scale3d(1.1, 0.85, 1);
+  }
+  65% {
+    transform: scale3d(0.95, 1.05, 1);
+  }
+  75% {
+    transform: scale3d(1.05, 0.95, 1);
+  }
+  to {
+    transform: scale3d(1, 1, 1);
+  }
+}
+/*fin botones*/
+.container-fluid{
+  position: relative;
+  margin-top: 60px;
+  max-width: 1100px;
+  padding-bottom: 30px;
+  border-radius: 35px;
+  background-color: #ffffff;
+}
+
+/*display none*/
+.hideDiv{
+  display: none;
+}
+
+/* 1024 PX*/
+@media screen and (max-width: 1140px) and (min-width: 1025px){ 
+  .container-fluid{
+    position: relative;
+    margin-top: 60px;
+    max-width: 990px;
+    padding-bottom: 0px;
+    border-radius: 35px;
+    background-color: #ffffff;
+  }
+}
+
+@media screen and (max-width: 1024px) and (min-width: 950px){ 
+  .container-fluid{
+    position: relative;
+    margin-top: 60px;
+    max-width: 900px;
+    padding-bottom: 0px;
+    border-radius: 35px;
+    background-color: #ffffff;
+  }
+}
+@media screen and (max-width: 949px) and (min-width: 769px){ 
+  .container-fluid{
+    position: relative;
+    margin-top: 60px;
+    max-width: 760px;
+    padding-bottom: 0px;
+    border-radius: 35px;
+    background-color: #ffffff;
+  }
+}
+/*768 - 720
+  cambios: botones registrar y eliminar
+*/
+@media screen and (max-width: 768px) and (min-width: 700px){ 
+  .container-fluid{
+    position: relative;
+    margin-top: 60px;
+    max-width: 690px;
+    padding-bottom: 0px;
+    border-radius: 35px;
+    background-color: #ffffff;
+  }
+  .btn-circle-download {
+    position: relative;
+    height: 120px; /*48*/
+    width: 120px; /*48*/
+    margin: auto;
+    border-radius: 100%;
+    background: #E8EAED;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.2s ease;
+  }
+  /*cross*/
+  .btn-circle-download#delete {
+    position: relative;
+    height: 120px; /*48*/
+    width: 120px; /*48*/
+    margin: auto;
+    border-radius: 100%;
+    background: #e9cbcb;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.2s ease;
+  }
+  .btn-circle-download svg#border {
+    position: absolute;
+    top: 0;
+    left: 0;
+    stroke: none;
+    stroke-dasharray: 144;
+    stroke-dashoffset: 144;
+    transition: all 0.9s linear;
+    width : 120px;
+    height: 120px;
+  }
+  /*cross*/
+  .btn-circle-download svg#borderc {
+    position: absolute;
+    top: 0;
+    left: 0;
+    stroke: none;
+    stroke-dasharray: 144;
+    stroke-dashoffset: 144;
+    transition: all 0.9s linear;
+    width: 120px;
+    height: 120px;
+  }
+  .btn-circle-download svg#arrow {
+    stroke-width: 2;
+    position: absolute;
+    top: 25px;
+    left: 37px;
+    stroke: #9098A9;
+    transition: all 0.2s ease;
+    width:45px;
+    height: 60px;
+  }
+  /* cross */
+  .btn-circle-download svg#cross {
+    stroke-width: 6;
+    position: absolute;
+    top: 25px;
+    left: 37px;
+    stroke: #9098A9;
+    transition: all 0.2s ease;
+    width:45px;
+    height: 60px;
+  }
+  .btn-circle-download svg#check {
+    stroke-width: 3;
+    position: absolute;
+    top: 28px;
+    left: 37px;
+    stroke: white;
+    transform: scale(0);
+    width: 45px;
+    height: 60px;
+  }
+}
+@media screen and (max-width: 699px) and (min-width: 620px){ 
+  .container-fluid{
+    position: relative;
+    margin-top: 60px;
+    max-width: 600px;
+    padding-bottom: 0px;
+    border-radius: 35px;
+    background-color: #ffffff;
+  }
+  .btn-circle-download {
+    position: relative;
+    height: 120px; /*48*/
+    width: 120px; /*48*/
+    margin: auto;
+    border-radius: 100%;
+    background: #E8EAED;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.2s ease;
+  }
+  /*cross*/
+  .btn-circle-download#delete {
+    position: relative;
+    height: 120px; /*48*/
+    width: 120px; /*48*/
+    margin: auto;
+    border-radius: 100%;
+    background: #e9cbcb;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.2s ease;
+  }
+  .btn-circle-download svg#border {
+    position: absolute;
+    top: 0;
+    left: 0;
+    stroke: none;
+    stroke-dasharray: 144;
+    stroke-dashoffset: 144;
+    transition: all 0.9s linear;
+    width : 120px;
+    height: 120px;
+  }
+  /*cross*/
+  .btn-circle-download svg#borderc {
+    position: absolute;
+    top: 0;
+    left: 0;
+    stroke: none;
+    stroke-dasharray: 144;
+    stroke-dashoffset: 144;
+    transition: all 0.9s linear;
+    width: 120px;
+    height: 120px;
+  }
+  .btn-circle-download svg#arrow {
+    stroke-width: 2;
+    position: absolute;
+    top: 25px;
+    left: 37px;
+    stroke: #9098A9;
+    transition: all 0.2s ease;
+    width:45px;
+    height: 60px;
+  }
+  /* cross */
+  .btn-circle-download svg#cross {
+    stroke-width: 6;
+    position: absolute;
+    top: 25px;
+    left: 37px;
+    stroke: #9098A9;
+    transition: all 0.2s ease;
+    width:45px;
+    height: 60px;
+  }
+  .btn-circle-download svg#check {
+    stroke-width: 3;
+    position: absolute;
+    top: 28px;
+    left: 37px;
+    stroke: white;
+    transform: scale(0);
+    width: 45px;
+    height: 60px;
+  }
+}
+@media screen and (max-width: 619px) and (min-width: 531px){ 
+  .container-fluid{
+    position: relative;
+    margin-top: 60px;
+    max-width: 560px;
+    padding-bottom: 0px;
+    border-radius: 35px;
+    background-color: #ffffff;
+  }
+  .btn-circle-download {
+    position: relative;
+    height: 120px; /*48*/
+    width: 120px; /*48*/
+    margin: auto;
+    border-radius: 100%;
+    background: #E8EAED;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.2s ease;
+  }
+  /*cross*/
+  .btn-circle-download#delete {
+    position: relative;
+    height: 120px; /*48*/
+    width: 120px; /*48*/
+    margin: auto;
+    border-radius: 100%;
+    background: #e9cbcb;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.2s ease;
+  }
+  .btn-circle-download svg#border {
+    position: absolute;
+    top: 0;
+    left: 0;
+    stroke: none;
+    stroke-dasharray: 144;
+    stroke-dashoffset: 144;
+    transition: all 0.9s linear;
+    width : 120px;
+    height: 120px;
+  }
+  /*cross*/
+  .btn-circle-download svg#borderc {
+    position: absolute;
+    top: 0;
+    left: 0;
+    stroke: none;
+    stroke-dasharray: 144;
+    stroke-dashoffset: 144;
+    transition: all 0.9s linear;
+    width: 120px;
+    height: 120px;
+  }
+  .btn-circle-download svg#arrow {
+    stroke-width: 2;
+    position: absolute;
+    top: 25px;
+    left: 37px;
+    stroke: #9098A9;
+    transition: all 0.2s ease;
+    width:45px;
+    height: 60px;
+  }
+  /* cross */
+  .btn-circle-download svg#cross {
+    stroke-width: 6;
+    position: absolute;
+    top: 25px;
+    left: 37px;
+    stroke: #9098A9;
+    transition: all 0.2s ease;
+    width:45px;
+    height: 60px;
+  }
+  .btn-circle-download svg#check {
+    stroke-width: 3;
+    position: absolute;
+    top: 28px;
+    left: 37px;
+    stroke: white;
+    transform: scale(0);
+    width: 45px;
+    height: 60px;
+  }
+/* .btn-xl */
+.btn-circle.btn-xl.btn-df{
+  width: 80px;
+  height: 80px;
+  font-size: 28px;
+}
+}
+@media screen and (max-width: 530px) { 
+  .container-fluid{
+    position: relative;
+    margin-top: 60px;
+    max-width: 480px;
+    padding-bottom: 0px;
+    border-radius: 35px;
+    background-color: #ffffff;
+  }
+  .btn-circle-download {
+    position: relative;
+    height: 70px; /*48*/
+    width: 70px; /*48*/
+    margin: auto;
+    border-radius: 100%;
+    background: #E8EAED;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.2s ease;
+  }
+  /*cross*/
+  .btn-circle-download#delete {
+    position: relative;
+    height: 70px; /*48*/
+    width: 70px; /*48*/
+    margin: auto;
+    border-radius: 100%;
+    background: #e9cbcb;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.2s ease;
+  }
+  .btn-circle-download svg#border {
+    position: absolute;
+    top: 0;
+    left: 0;
+    stroke: none;
+    stroke-dasharray: 144;
+    stroke-dashoffset: 144;
+    transition: all 0.9s linear;
+    width : 70px;
+    height: 70px;
+  }
+  /*cross*/
+  .btn-circle-download svg#borderc {
+    position: absolute;
+    top: 0;
+    left: 0;
+    stroke: none;
+    stroke-dasharray: 144;
+    stroke-dashoffset: 144;
+    transition: all 0.9s linear;
+    width: 70px;
+    height: 70px;
+  }
+  .btn-circle-download svg#arrow {
+    stroke-width: 2;
+    position: absolute;
+    top: 15px;
+    left: 19px;
+    stroke: #9098A9;
+    transition: all 0.2s ease;
+    width:35px;
+    height: 40px;
+  }
+  /* cross */
+  .btn-circle-download svg#cross {
+    stroke-width: 6;
+    position: absolute;
+    top: 15px;
+    left: 17px;
+    stroke: #9098A9;
+    transition: all 0.2s ease;
+    width:35px;
+    height: 40px;
+  }
+  .btn-circle-download svg#check {
+    stroke-width: 3;
+    position: absolute;
+    top: 18px;
+    left: 17px;
+    stroke: white;
+    transform: scale(0);
+    width: 35px;
+    height: 40px;
+  }
+/* .btn-xl */
+.btn-circle.btn-xl.btn-df{
+  width: 80px;
+  height: 80px;
+  font-size: 28px;
+}
+}
+
+
