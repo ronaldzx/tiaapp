@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 const Root = "http://" + document.location.hostname + "/tiaapp/src/";
 var registred = 0;
-
+var cantidad = 0;
 function showAction(){
     var id = document.getElementById('registered');
     if(id.style.display ==='block'){
@@ -13,7 +13,8 @@ function showAction(){
 }
 
 function enviarDatos(e){
-    var datos =  new FormData(document.getElementById('formulario'))
+    var datos =  new FormData(document.getElementById('formulario'));
+    datos.append ('cantidad',cantidad);
     var url= Root +"api/prueba.php";
     fetch(url,{
         method :"POST",
@@ -48,12 +49,11 @@ class Form extends Component {
       }
 
         agregarDatos(){
-        this.setState({quantity:Math.abs(this.state.quantity)})
+        cantidad = Math.abs(this.state.quantity);        
         enviarDatos();
       }
         eliminarDatos(){
-        this.setState({quantity:(this.state.quantity*(-1))})
-        console.log(this.state.quantity)
+        cantidad = (Math.abs(this.state.quantity))*-1; 
         enviarDatos();
       }
       mostrarProductos(){
@@ -110,13 +110,6 @@ class Form extends Component {
                                             type="text" 
                                             className="form-control" 
                                             placeholder="Ingrese su Usuario"/>
-                                     <input 
-                                            id ="cantidad"
-                                            name="cantidad" 
-                                            type="hidden" 
-                                            className="form-control" 
-                                            placeholder="Ingrese su Usuario"
-                                            value ={this.state.quantity}/>
                                 </div>
                                 <div className="col">
                                     <input 
