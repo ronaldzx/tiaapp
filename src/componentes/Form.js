@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 const Root = "http://" + document.location.hostname + "/tiaapp/src/";
 var registred = 0;
 
@@ -13,7 +12,24 @@ function showAction(){
          }, 1000)
 }
 
+function enviarDatos(e){
+    var datos =  new FormData(document.getElementById('formulario'))
+    var url= Root +"api/prueba.php";
+    fetch(url,{
+        method :"POST",
+        body : datos
+    })
+    .then( res => res.json())
+    .then(response=>{
+        console.log(response)
+    })
+    .catch(function(err){
+        console.log('fallo'+err)
+    });
+}
+
 class Form extends Component {
+
     constructor(){
         super();
         this.state = ({
@@ -25,13 +41,21 @@ class Form extends Component {
           db: []
         });
         this.mostrarProductos();
-
-        this.handleAdd = this.handleAdd.bind(this);
-        this.handleDelete = this.handleDelete.bind(this);
         this.handleAdd5 = this.handleAdd5.bind(this);
-        this.handleDelete5 = this.handleDelete5.bind(this);
+        this.handleDelete5 = this.handleDelete5.bind(this);  
+        this.agregarDatos = this.agregarDatos.bind(this);
+        this.eliminarDatos = this.eliminarDatos.bind(this);   
       }
 
+        agregarDatos(){
+        this.setState({quantity:Math.abs(this.state.quantity)})
+        enviarDatos();
+      }
+        eliminarDatos(){
+        this.setState({quantity:(this.state.quantity*(-1))})
+        console.log(this.state.quantity)
+        enviarDatos();
+      }
       mostrarProductos(){
           return fetch(Root +'api/index.php')
           .then(    (response) => response.json())
@@ -40,13 +64,6 @@ class Form extends Component {
                   db:responseJson
               });
           })
-      }
-
-      handleDelete(){
-            this.setState({quantity:this.state.quantity-1})
-      }
-      handleAdd(){
-            this.setState({quantity:this.state.quantity+1})
       }
       handleAdd5(){
           var modulo = 0;
@@ -73,13 +90,13 @@ class Form extends Component {
             this.setState({quantity:this.state.quantity-(5+modulo)})
           }       
       }
-      
+
     render(){
         return(
             <div className="container-fluid">
-                <div id='form' className="container d-flex mt-4 pb-5 justify-content-md-center" >
+                <div id='form' className="container d-flex mt-4 pb-5 justify-content-md-center">
                     <div className ="content mt-5 ml-4 d-flex">
-                        <form>
+                        <form id="formulario" name="form">
                             <div className="row">
                                 <div className="col">
                                     <button type="button" className='btn btn-secondary btn-lg'>Total 0 registros de {this.state.products[1]}</button>
@@ -87,22 +104,32 @@ class Form extends Component {
                             </div>
                             <div className="row mt-4">
                                 <div className="col">
-                                    <input name="usuario" 
+                                    <input 
+                                            id ="usuario"
+                                            name="usuario" 
                                             type="text" 
                                             className="form-control" 
                                             placeholder="Ingrese su Usuario"/>
+                                     <input 
+                                            id ="cantidad"
+                                            name="cantidad" 
+                                            type="hidden" 
+                                            className="form-control" 
+                                            placeholder="Ingrese su Usuario"
+                                            value ={this.state.quantity}/>
                                 </div>
                                 <div className="col">
-                                    <input name="clave" 
+                                    <input 
+                                            id="orden"
+                                            name="orden" 
                                             type="text" 
                                             className="form-control"
-                                            placeholder="Ingrese Código"/>
+                                            placeholder="Ingrese Orden"/>
                                 </div>
                             </div>
                             <div className="row mt-3">
                                 <div className="col">
-                                        <select className="form-control form-control-lg">
-                                            <option>Seleccione el Producto</option>
+                                        <select name="descripcion" className="form-control form-control-lg" onChange={this.handleInput}>
                                             {this.state.db.map((props,index) =>{
                                                 return(
                                                     <option>{props.descripcion}</option> 
@@ -113,7 +140,7 @@ class Form extends Component {
                             </div>    
                             <div className="row mt-3">
                                 <div className="col">
-                                    <div id="add" className="btn-circle-download" onClick={showAction}>
+                                    <div id="add" className="btn-circle-download" onClick={this.agregarDatos}>
                                         <svg id="arrow" width="90px" height="120px" viewBox="17 14 14 20">
                                             <path d="M24,15 L24,32"></path>
                                             <polyline points="30 27 24 33 18 27"></polyline>
@@ -127,7 +154,7 @@ class Form extends Component {
                                     </div>
                                 </div>
                                 <div className="col">
-                                    <div id="delete" className="btn-circle-download">
+                                    <div id="delete" className="btn-circle-download" onClick={this.eliminarDatos}>
                                         <svg id="cross" viewBox="7 -9 14 50">
                                             <polyline points="0,30 30,00"/>
                                             <polyline points="0,0 30,30"/>
@@ -144,14 +171,14 @@ class Form extends Component {
                             <div className="row mt-3">
                                 <div className="col">
                                     <div id="registered" className="alert alert-success hideDiv">
-                                        <strong>Registrados!</strong> Has registrado {registred} {this.state.products[1]}
+                                        <strong>Registrados!</strong> Has registrado {registred}
                                     </div>
                                 </div>
                             </div>
                             <div className="row mt-3">
                                 <div className="col">
                                     <div id="deleted" className="alert alert-danger">
-                                        <strong>Eliminados!</strong> Has eliminado {registred} {this.state.products[1]}
+                                        <strong>Eliminados!</strong> Has eliminado {registred} {this.state.db.descripcion}
                                     </div>
                                 </div>
                             </div>
