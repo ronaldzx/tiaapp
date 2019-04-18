@@ -3,6 +3,10 @@ const Root = "http://" + document.location.hostname + "/tiaapp/src/";
 var registred = 0;
 var cantidad = 0;
 var total = 0;
+var producto = '';
+var datos;
+var orden;
+var productos =[];
 function showAction(){
     var id = document.getElementById('registered');
     if(id.style.display ==='block'){
@@ -14,7 +18,7 @@ function showAction(){
 }
 
 function enviarDatos(e){
-    var datos =  new FormData(document.getElementById('formulario'));
+    datos =  new FormData(document.getElementById('formulario'));
     datos.append ('cantidad',cantidad);
     var url= Root +"api/prueba.php";
     fetch(url,{
@@ -29,7 +33,6 @@ function enviarDatos(e){
         console.log('fallo'+err)
     });
 }
-
 class Form extends Component {
 
     constructor(){
@@ -38,10 +41,12 @@ class Form extends Component {
           cantidad: cantidad,
           quantity:0,
           total:total,
+          producto:producto,
           color :'secondary',
           text :'Registrar',
           disabled : '',
-          db: []
+          db: [],
+          dbFiltrado : []
         });
         this.mostrarProductos();
         this.handleAdd5 = this.handleAdd5.bind(this);
@@ -49,34 +54,68 @@ class Form extends Component {
         this.agregarDatos = this.agregarDatos.bind(this);
         this.eliminarDatos = this.eliminarDatos.bind(this);   
         this.volverTotal = this.volverTotal.bind(this);
+        this.mostrarProductosFiltrado = this.mostrarProductosFiltrado.bind(this);
       }
 
-        volverTotal(){
+        volverTotal(){ // esto me regresa el total a 0 // esto se llama en el evento OnChange del combobox
         total = 0;
         this.setState({total:0});
       }
         agregarDatos(){
         cantidad = Math.abs(this.state.quantity);        
         enviarDatos();
-        total = total + cantidad;
+        total = total + cantidad; // obtengo la cantidad de productos ingresados y los almaceno en total
         this.setState({total:total});
         this.setState({cantidad:cantidad});
+        producto = datos.get('descripcion');
+        this.setState({producto:producto});
+
       }
         eliminarDatos(){
         cantidad = (Math.abs(this.state.quantity))*-1; 
-        total = total + cantidad;
+        total = total + cantidad; // de igual manera acá, pero como es negativo automaticamente lo resta.
         enviarDatos();
-        this.setState({total:total})
+        this.setState({total:total});
+        this.setState({cantidad:cantidad});
+        producto = datos.get('descripcion');
+        this.setState({producto:producto});
       }
       mostrarProductos(){
+        console.log(this.state.dbFiltrado)
           return fetch(Root +'api/index.php')
           .then(    (response) => response.json())
           .then((responseJson) =>{
               this.setState({
                   db:responseJson
               });
-          })
+          });
+          
       }
+      mostrarProductosFiltrado(){
+        orden =  new FormData(document.getElementById('formulario'));
+        var url= Root +"api/ProductosFiltrado.php";
+        fetch(url,{
+            method :"POST",
+            body : orden
+        })
+        .then( res => res.json())
+        .then(response=>{
+            this.setState({ 
+                dbFiltrado:response
+            })
+        })
+        .catch(function(err){
+            console.log('fallo '+err)
+        });
+      
+        // return fetch(Root +'api/ProductosFiltrado.php')
+        // .then(    (response) => response.json())
+        // .then((responseJson) =>{
+        //     this.setState({
+        //         dbFiltrado:responseJson
+        //     });
+        // })
+    }
       handleAdd5(){
           var modulo = 0;
           modulo = this.state.quantity%5;
@@ -100,7 +139,7 @@ class Form extends Component {
             this.setState({quantity:this.state.quantity-5})
           }else{ 
             this.setState({quantity:this.state.quantity-(5+modulo)})
-          }       
+          }    
       }
 
     render(){
@@ -111,7 +150,7 @@ class Form extends Component {
                         <form id="formulario" name="form">
                             <div className="row">
                                 <div className="col">
-                                    <button type="button" className='btn btn-secondary btn-lg'>Total {this.state.total} registros de {this.state.db.id}</button>
+                                    <button type="button" className='btn btn-secondary btn-lg'>Total {this.state.total} registros de {this.state.producto}</button>
                                 </div>
                             </div>
                             <div className="row mt-4">
@@ -124,18 +163,19 @@ class Form extends Component {
                                             placeholder="Ingrese su Usuario"/>
                                 </div>
                                 <div className="col">
-                                    <input 
-                                            id="orden"
-                                            name="orden" 
-                                            type="text" 
-                                            className="form-control"
-                                            placeholder="Ingrese Orden"/>
+                                        <select id ="orden" name="orden" className="form-control form-control-lg" onChange={this.mostrarProductosFiltrado}>
+                                            {this.state.db.map((props,index) =>{
+                                                return(
+                                                    <option>{props.orden}</option> 
+                                                )
+                                            })}
+                                        </select>
                                 </div>
                             </div>
                             <div className="row mt-3">
                                 <div className="col">
                                         <select name="descripcion" className="form-control form-control-lg" onChange={this.volverTotal}>
-                                            {this.state.db.map((props,index) =>{
+                                            {this.state.dbFiltrado.map((props,index) =>{
                                                 return(
                                                     <option>{props.descripcion}</option> 
                                                 )
@@ -175,15 +215,15 @@ class Form extends Component {
                             </div>
                             <div className="row mt-3">
                                 <div className="col">
-                                    <div id="registered" className="alert alert-success hideDiv">
-                                        <strong>Registrados!</strong> Has registrado {registred}
+                                    <div id="registered" className="alert alert-success">
+                                        <strong>Registrados!</strong> Has registrado {registred} {this.state.producto}
                                     </div>
                                 </div>
                             </div>
                             <div className="row mt-3">
                                 <div className="col">
                                     <div id="deleted" className="alert alert-danger">
-                                        <strong>Eliminados!</strong> Has eliminado {this.state.cantidad} {this.state.db.descripcion}
+                                        <strong>Eliminados!</strong> Has eliminado {this.state.cantidad} {this.state.producto}
                                     </div>
                                 </div>
                             </div>
@@ -215,7 +255,7 @@ class Form extends Component {
                                     <button type="button" 
                                                 className="btn btn-danger btn-circle btn-xl btn-df" 
                                                 onClick={this.handleDelete5}>
-                                                <i class='fas fa-trash'></i>
+                                                <i class="fas fa-minus"></i>
                                     </button>
                                 </div>  
                             </div>                      
