@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 const Root = "http://" + document.location.hostname + "/tiaapp/src/";
 var registred = 0;
 var cantidad = 0;
+var total = 0;
 function showAction(){
     var id = document.getElementById('registered');
     if(id.style.display ==='block'){
@@ -34,11 +35,12 @@ class Form extends Component {
     constructor(){
         super();
         this.state = ({
+          cantidad: cantidad,
           quantity:0,
+          total:total,
           color :'secondary',
           text :'Registrar',
           disabled : '',
-          products : ['Fideos','Leche','Carne'],
           db: []
         });
         this.mostrarProductos();
@@ -46,15 +48,25 @@ class Form extends Component {
         this.handleDelete5 = this.handleDelete5.bind(this);  
         this.agregarDatos = this.agregarDatos.bind(this);
         this.eliminarDatos = this.eliminarDatos.bind(this);   
+        this.volverTotal = this.volverTotal.bind(this);
       }
 
+        volverTotal(){
+        total = 0;
+        this.setState({total:0});
+      }
         agregarDatos(){
         cantidad = Math.abs(this.state.quantity);        
         enviarDatos();
+        total = total + cantidad;
+        this.setState({total:total});
+        this.setState({cantidad:cantidad});
       }
         eliminarDatos(){
         cantidad = (Math.abs(this.state.quantity))*-1; 
+        total = total + cantidad;
         enviarDatos();
+        this.setState({total:total})
       }
       mostrarProductos(){
           return fetch(Root +'api/index.php')
@@ -99,7 +111,7 @@ class Form extends Component {
                         <form id="formulario" name="form">
                             <div className="row">
                                 <div className="col">
-                                    <button type="button" className='btn btn-secondary btn-lg'>Total 0 registros de {this.state.products[1]}</button>
+                                    <button type="button" className='btn btn-secondary btn-lg'>Total {this.state.total} registros de {this.state.db.id}</button>
                                 </div>
                             </div>
                             <div className="row mt-4">
@@ -122,7 +134,7 @@ class Form extends Component {
                             </div>
                             <div className="row mt-3">
                                 <div className="col">
-                                        <select name="descripcion" className="form-control form-control-lg" onChange={this.handleInput}>
+                                        <select name="descripcion" className="form-control form-control-lg" onChange={this.volverTotal}>
                                             {this.state.db.map((props,index) =>{
                                                 return(
                                                     <option>{props.descripcion}</option> 
@@ -171,7 +183,7 @@ class Form extends Component {
                             <div className="row mt-3">
                                 <div className="col">
                                     <div id="deleted" className="alert alert-danger">
-                                        <strong>Eliminados!</strong> Has eliminado {registred} {this.state.db.descripcion}
+                                        <strong>Eliminados!</strong> Has eliminado {this.state.cantidad} {this.state.db.descripcion}
                                     </div>
                                 </div>
                             </div>
@@ -185,7 +197,7 @@ class Form extends Component {
                             </div>                    
                             <div className="row mt-4">
                                 <div className="col">
-                                    <button type="button" className='btn btn-info'>Seleccionando {this.state.quantity} {this.state.products[1]}</button>
+                                    <button type="button" className='btn btn-info'>Seleccionando {this.state.quantity} {this.state.db.id}</button>
                                 </div>
                             </div>
                             <div className="row mt-4">                     

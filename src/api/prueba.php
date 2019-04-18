@@ -19,11 +19,8 @@ $pdoExec = $pdoResult->execute([
     ":fecha"=>$fecha
     ]);
 
-if($descripcion ===''){
-    echo json_encode('llena todos los campos');
-}else{
+
     echo json_encode('correcto: '.$descripcion.' orden: '.$orden. 'cantidad: '.$cantidad);
-}
 
 
 
