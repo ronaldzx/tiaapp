@@ -1,21 +1,10 @@
 import React, { Component } from 'react';
 const Root = "http://" + document.location.hostname + "/tiaapp/src/";
-var registred = 0;
 var cantidad = 0;
 var total = 0;
 var producto = '';
 var datos;
 var orden;
-var productos =[];
-function showAction(){
-    var id = document.getElementById('registered');
-    if(id.style.display ==='block'){
-        console.log('existe')
-    }
-        setTimeout(() => {
-            
-         }, 1000)
-}
 
 function enviarDatos(e){
     datos =  new FormData(document.getElementById('formulario'));
@@ -42,13 +31,14 @@ class Form extends Component {
           quantity:0,
           total:total,
           producto:producto,
-          color :'secondary',
-          text :'Registrar',
+          color :'success',
+          text :'Registrado',
           disabled : '',
           db: [],
           dbFiltrado : []
         });
         this.mostrarProductos();
+        this.mostrarProductosFiltrado();
         this.handleAdd5 = this.handleAdd5.bind(this);
         this.handleDelete5 = this.handleDelete5.bind(this);  
         this.agregarDatos = this.agregarDatos.bind(this);
@@ -60,6 +50,7 @@ class Form extends Component {
         volverTotal(){ // esto me regresa el total a 0 // esto se llama en el evento OnChange del combobox
         total = 0;
         this.setState({total:0});
+        this.setState({producto:''})
       }
         agregarDatos(){
         cantidad = Math.abs(this.state.quantity);        
@@ -69,6 +60,8 @@ class Form extends Component {
         this.setState({cantidad:cantidad});
         producto = datos.get('descripcion');
         this.setState({producto:producto});
+        this.setState({text:'Registrado'});
+        this.setState({color:'success'});
 
       }
         eliminarDatos(){
@@ -79,9 +72,10 @@ class Form extends Component {
         this.setState({cantidad:cantidad});
         producto = datos.get('descripcion');
         this.setState({producto:producto});
+        this.setState({text:'Eliminado'});
+        this.setState({color:'danger'});
       }
       mostrarProductos(){
-        console.log(this.state.dbFiltrado)
           return fetch(Root +'api/index.php')
           .then(    (response) => response.json())
           .then((responseJson) =>{
@@ -94,7 +88,7 @@ class Form extends Component {
       mostrarProductosFiltrado(){
         orden =  new FormData(document.getElementById('formulario'));
         var url= Root +"api/ProductosFiltrado.php";
-        fetch(url,{
+        return fetch(url,{
             method :"POST",
             body : orden
         })
@@ -164,6 +158,7 @@ class Form extends Component {
                                 </div>
                                 <div className="col">
                                         <select id ="orden" name="orden" className="form-control form-control-lg" onChange={this.mostrarProductosFiltrado}>
+                                            <option>Seleccionar Orden</option>
                                             {this.state.db.map((props,index) =>{
                                                 return(
                                                     <option>{props.orden}</option> 
@@ -175,6 +170,7 @@ class Form extends Component {
                             <div className="row mt-3">
                                 <div className="col">
                                         <select name="descripcion" className="form-control form-control-lg" onChange={this.volverTotal}>
+                                            <option>Seleccionar Producto</option>
                                             {this.state.dbFiltrado.map((props,index) =>{
                                                 return(
                                                     <option>{props.descripcion}</option> 
@@ -215,17 +211,11 @@ class Form extends Component {
                             </div>
                             <div className="row mt-3">
                                 <div className="col">
-                                    <div id="registered" className="alert alert-success">
-                                        <strong>Registrados!</strong> Has registrado {registred} {this.state.producto}
+                                    <div id="registered" className={"alert alert-"+this.state.color}>
+                                        <strong>Hecho!</strong> Has {this.state.text} {this.state.cantidad} {this.state.producto}
                                     </div>
                                 </div>
-                            </div>
-                            <div className="row mt-3">
-                                <div className="col">
-                                    <div id="deleted" className="alert alert-danger">
-                                        <strong>Eliminados!</strong> Has eliminado {this.state.cantidad} {this.state.producto}
-                                    </div>
-                                </div>
+
                             </div>
                         </form>      
                     </div>
