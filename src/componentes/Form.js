@@ -8,19 +8,31 @@ var orden;
 
 function enviarDatos(e){
     datos =  new FormData(document.getElementById('formulario'));
-    datos.append ('cantidad',cantidad);
-    var url= Root +"api/prueba.php";
-    fetch(url,{
+    //datos.append ('cantidad',cantidad);
+    fetch ('/api/productosFiltrado',{
         method :"POST",
-        body : datos
+        headers: {
+            'Accept': 'application/json',
+            'Content-type': 'application/json',
+            },
+            body: JSON.stringify({
+            descripcion : datos.get('descripcion'),
+            orden:datos.get('orden'),
+            cantidad:cantidad
     })
-    .then( res => res.json())
-    .then(response=>{
-        console.log(response)
-    })
-    .catch(function(err){
-        console.log('fallo'+err)
-    });
+})
+    // var url= Root +"api/prueba.php";
+    // fetch(url,{
+    //     method :"POST",
+    //     body : datos
+    // })
+    // .then( res => res.json())
+    // .then(response=>{
+    //     console.log(response)
+    // })
+    // .catch(function(err){
+    //     console.log('fallo'+err)
+    // });
 }
 class Form extends Component {
 
@@ -37,15 +49,38 @@ class Form extends Component {
           db: [],
           dbFiltrado : []
         });
-        this.mostrarProductos();
-        this.mostrarProductosFiltrado();
+        this.mostrarOrdensExpress();
+        this.mostrarProductosFiltradoExpress();
+        //this.mostrarProductos();
+        //this.mostrarProductosFiltrado();
         this.handleAdd5 = this.handleAdd5.bind(this);
         this.handleDelete5 = this.handleDelete5.bind(this);  
         this.agregarDatos = this.agregarDatos.bind(this);
         this.eliminarDatos = this.eliminarDatos.bind(this);   
         this.volverTotal = this.volverTotal.bind(this);
-        this.mostrarProductosFiltrado = this.mostrarProductosFiltrado.bind(this);
+        this.mostrarProductosFiltradoExpress = this.mostrarProductosFiltradoExpress.bind(this);
+        //this.mostrarProductosFiltrado = this.mostrarProductosFiltrado.bind(this);
       }
+        mostrarProductosFiltradoExpress(){
+            var Formulario =  new FormData(document.getElementById('formulario'));
+            fetch('/api/productosFiltrado/'+Formulario.get('orden'))
+            .then(    (response) => response.json())
+            .then((dbFiltrado) =>{
+                this.setState({
+                    dbFiltrado
+                },()=> console.log('fetchea2 ',dbFiltrado));
+            });
+        }
+
+        mostrarOrdensExpress(){
+            fetch('/api/productosFiltrado')
+            .then(    (response) => response.json())
+            .then((db) =>{
+                this.setState({
+                    db
+                },()=> console.log('fetchea3 ',db));
+            });
+        }    
 
         volverTotal(){ // esto me regresa el total a 0 // esto se llama en el evento OnChange del combobox
         total = 0;
@@ -75,41 +110,33 @@ class Form extends Component {
         this.setState({text:'Eliminado'});
         this.setState({color:'danger'});
       }
-      mostrarProductos(){
-          return fetch(Root +'api/index.php')
-          .then(    (response) => response.json())
-          .then((responseJson) =>{
-              this.setState({
-                  db:responseJson
-              });
-          });
-          
-      }
-      mostrarProductosFiltrado(){
-        orden =  new FormData(document.getElementById('formulario'));
-        var url= Root +"api/ProductosFiltrado.php";
-        return fetch(url,{
-            method :"POST",
-            body : orden
-        })
-        .then( res => res.json())
-        .then(response=>{
-            this.setState({ 
-                dbFiltrado:response
-            })
-        })
-        .catch(function(err){
-            console.log('fallo '+err)
-        });
-      
-        // return fetch(Root +'api/ProductosFiltrado.php')
-        // .then(    (response) => response.json())
-        // .then((responseJson) =>{
-        //     this.setState({
-        //         dbFiltrado:responseJson
-        //     });
-        // })
-    }
+    //   mostrarProductos(){
+    //       return fetch(Root +'api/index.php')
+    //       .then(    (response) => response.json())
+    //       .then((responseJson) =>{
+    //           this.setState({
+    //               db:responseJson
+    //           });
+    //       });
+    //   }
+
+    //   mostrarProductosFiltrado(){
+    //     orden =  new FormData(document.getElementById('formulario'));
+    //     var url= Root +"api/ProductosFiltrado.php";
+    //     return fetch(url,{
+    //         method :"POST",
+    //         body : orden
+    //     })
+    //     .then( res => res.json())
+    //     .then(response=>{
+    //         this.setState({ 
+    //             dbFiltrado:response
+    //         })
+    //     })
+    //     .catch(function(err){
+    //         console.log('fallo '+err)
+    //     });
+    // }
       handleAdd5(){
           var modulo = 0;
           modulo = this.state.quantity%5;
@@ -157,11 +184,11 @@ class Form extends Component {
                                             placeholder="Ingrese su Usuario"/>
                                 </div>
                                 <div className="col">
-                                        <select id ="orden" name="orden" className="form-control form-control-lg" onChange={this.mostrarProductosFiltrado}>
+                                        <select id ="orden" name="orden" className="form-control form-control-lg" onChange={this.mostrarProductosFiltradoExpress}>
                                             <option>Seleccionar Orden</option>
                                             {this.state.db.map((props,index) =>{
                                                 return(
-                                                    <option>{props.orden}</option> 
+                                                    <option>{props.Orden}</option> 
                                                 )
                                             })}
                                         </select>
@@ -173,7 +200,7 @@ class Form extends Component {
                                             <option>Seleccionar Producto</option>
                                             {this.state.dbFiltrado.map((props,index) =>{
                                                 return(
-                                                    <option>{props.descripcion}</option> 
+                                                    <option>{props.DesIte}</option> 
                                                 )
                                             })}
                                         </select>
