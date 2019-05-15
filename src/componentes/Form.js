@@ -5,9 +5,31 @@ var producto = '';
 var datos;
 var viaje = 0;
 var sellIn = 0;
+var selected;
 
-function enviarDatos(e) {
+function enviarNoDeclarado(event) {
+   
     datos = new FormData(document.getElementById('formulario'));
+    console.log('opss',selected)
+    //datos.append ('cantidad',cantidad);
+    fetch('/api/productoNoDeclarado', {
+        method: "POST",
+        headers: {
+            'Accept': 'application/json',
+            'Content-type': 'application/json',
+        },
+        body: JSON.stringify({
+            descripcion: selected,
+            orden: datos.get('orden'),
+            cantidad: cantidad
+        })
+    })
+}
+
+function enviarDatos(event) {
+   
+    datos = new FormData(document.getElementById('formulario'));
+    console.log('opss',selected)
     //datos.append ('cantidad',cantidad);
     fetch('/api/productosFiltrado', {
         method: "POST",
@@ -16,7 +38,7 @@ function enviarDatos(e) {
             'Content-type': 'application/json',
         },
         body: JSON.stringify({
-            descripcion: datos.get('descripcion'),
+            descripcion: selected,
             orden: datos.get('orden'),
             cantidad: cantidad
         })
@@ -38,7 +60,8 @@ class Form extends Component {
             db: [],
             dbFiltrado: [],
             dbSellIn: 0,
-            sellIn: 0
+            sellIn: 0,
+            saldo: 0
         });
         this.mostrarOrdensExpress();
         this.mostrarProductosFiltradoExpress();
@@ -50,6 +73,7 @@ class Form extends Component {
         this.eliminarDatos = this.eliminarDatos.bind(this);
         this.volverTotal = this.volverTotal.bind(this);
         this.mostrarProductosFiltradoExpress = this.mostrarProductosFiltradoExpress.bind(this);
+        this.agregarDatosNoDeclarado = this.agregarDatosNoDeclarado.bind(this);
         //this.mostrarProductosFiltrado = this.mostrarProductosFiltrado.bind(this);
     }
     mostrarProductosFiltradoExpress() {
@@ -93,16 +117,20 @@ class Form extends Component {
             this.state.dbSellIn.map((props) => {
                 this.setState({ sellIn: props.SellIn })
             })
+            this.setState({saldo:this.state.sellIn})
+            console.log(this.state.saldo)
         })();
         viaje = 0;
         total = 0;
         this.setState({ total: 0 });
         this.setState({ producto: '' })
         this.setState({ viaje: 0 })
+        
     }
-    agregarDatos() {
-        console.log('STADL', this.state.dbSellIn);
+    agregarDatos(event) {
         cantidad = Math.abs(this.state.quantity);
+        var combo = document.getElementById("descripcion");
+        selected = combo.options[combo.selectedIndex].text;
         enviarDatos();
         total = total + cantidad; // obtengo la cantidad de productos ingresados y los almaceno en total
         this.setState({ total: total });
@@ -113,11 +141,15 @@ class Form extends Component {
         this.setState({ color: 'success' });
         viaje = viaje + 1;
         this.setState({ viaje: viaje });
-
+        this.setState({saldo: this.state.saldo - this.state.quantity})
+        console.log('cantidad: ',this.state.quantity)
+        console.log('a ver: ',this.state.saldo)
     }
     eliminarDatos() {
         cantidad = (Math.abs(this.state.quantity)) * -1;
         total = total + cantidad; // de igual manera acá, pero como es negativo automaticamente lo resta.
+        var combo = document.getElementById("descripcion");
+        selected = combo.options[combo.selectedIndex].text;
         enviarDatos();
         this.setState({ total: total });
         this.setState({ cantidad: cantidad });
@@ -125,6 +157,24 @@ class Form extends Component {
         this.setState({ producto: producto });
         this.setState({ text: 'Eliminado' });
         this.setState({ color: 'danger' });
+    }
+    agregarDatosNoDeclarado(event) {
+        cantidad = Math.abs(this.state.quantity);
+        var combo = document.getElementById("descripcion");
+        selected = combo.options[combo.selectedIndex].text;
+        enviarNoDeclarado();
+        total = total + cantidad; // obtengo la cantidad de productos ingresados y los almaceno en total
+        this.setState({ total: total });
+        this.setState({ cantidad: cantidad });
+        producto = datos.get('descripcion');
+        this.setState({ producto: producto });
+        this.setState({ text: 'Registrado' });
+        this.setState({ color: 'success' });
+        viaje = viaje + 1;
+        this.setState({ viaje: viaje });
+        this.setState({saldo: this.state.saldo - this.state.quantity})
+        console.log('cantidad: ',this.state.quantity)
+        console.log('a ver: ',this.state.saldo)
     }
 
     handleAdd5() {
@@ -175,7 +225,7 @@ class Form extends Component {
                                     </select>
                                 </div>
                                 <div className="col-8">
-                                    <select name="descripcion" className="form-control" onChange={this.volverTotal}>
+                                    <select  id="descripcion" name="descripcion"  className="form-control" onChange={this.volverTotal}>
                                         <option>Seleccionar Producto</option>
                                         {this.state.dbFiltrado.map((props, index) => {
                                             //console.log(props.pro_iId)
@@ -217,25 +267,37 @@ class Form extends Component {
                                 </div>
                             </div>
                             <div className="row mt-3">
-                                <div className="col">
+                                <div className="col-4">
                                     <input
                                         type="text"
                                         id="disabledTextInput"
-                                        name="saldo"
+                                        name="viaje"
                                         className="form-control"
-                                        placeholder="SALDO"
-                                        value={'Total ingresado: ' + this.state.total}
+                                        placeholder="viaje"
+                                        value={'Número de viaje: ' + this.state.viaje}
                                         disabled />
                                     <div className="row mt-3">
                                         <div className="col">
                                             <input
                                                 type="text"
                                                 id="disabledTextInput"
-                                                name="saldo"
+                                                name="total"
                                                 className="form-control"
-                                                placeholder="SALDO"
-                                                value={'SALDO: ' + this.state.total}
+                                                placeholder="total"
+                                                value={'Total ingresado: ' + this.state.total}
                                                 disabled />
+                                            <div className="row mt-3">
+                                                <div className="col">
+                                                    <input
+                                                        type="text"
+                                                        id="disabledTextInput"
+                                                        name="saldo"
+                                                        className="form-control"
+                                                        placeholder="SALDO"
+                                                        value={'SALDO: ' + this.state.saldo}
+                                                        disabled />
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -268,9 +330,17 @@ class Form extends Component {
                                     </div>
                                 </div>
                             </div>
-
                             <div className="row mt-3">
+                                <div className="col-4">
 
+                                </div>
+                                <div className="col-8">
+                                    <button type="button"
+                                        className="btn btn-warning btn-circle btn-xl btn-df"
+                                        onClick={this.agregarDatosNoDeclarado}>
+                                        <i class="fas fa-sign-in-alt"></i>
+                                    </button>
+                                </div>
                             </div>
                             <div className="row mt-3">
                                 <div className="col">
