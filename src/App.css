@@ -33,17 +33,18 @@
 }
 
 .btn-circle.btn-xl {
-  width: 150px;
-  height: 150px;
-  padding: 10px 16px;
+  width: 50px;
+  height: 50px;
+  /*padding: 10px 16px;*/
   border-radius: 100px;
-  font-size: 48px;
+  font-size: 24px;
   line-height: 1.33;
 }
 .btn-circle.btn-xl.btn-df{
-  width: 80px;
-  height: 80px;
-  font-size: 48px;
+  width: 40px;
+  height: 40px;
+  font-size: 14px;
+  text-align: center;
 }
 
 .btn-circle {
@@ -644,11 +645,12 @@
     height: 40px;
   }
 /* .btn-xl */
-.btn-circle.btn-xl.btn-df{
-  width: 80px;
-  height: 80px;
-  font-size: 28px;
-}
+  .btn-circle.btn-xl.btn-df{
+    width: 80px;
+    height: 80px;
+    font-size: 28px;
+  } 
+
 }
 
 

@@ -14,3 +14,21 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+/*selct*/
+.green{
+  color: black;
+  font-weight: bold;
+}
+
+.totalIngresado {
+  background-color: rgb(229, 240, 75);
+  border-style: solid;
+  border-color: black;
+  color: black;
+  padding: 3px;
+  border-radius: 5px;
+  text-decoration: none;
+  cursor: pointer;
+  text-align: center;
+}

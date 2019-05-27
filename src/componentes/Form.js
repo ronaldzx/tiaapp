@@ -4,13 +4,13 @@ var total = 0;
 var producto = '';
 var datos;
 var viaje = 0;
-var sellIn = 0;
 var selected;
+var color = '';
 
 function enviarNoDeclarado(event) {
-   
+
     datos = new FormData(document.getElementById('formulario'));
-    console.log('opss',selected)
+    console.log('opss', selected)
     //datos.append ('cantidad',cantidad);
     fetch('/api/productoNoDeclarado', {
         method: "POST",
@@ -25,12 +25,29 @@ function enviarNoDeclarado(event) {
         })
     })
 }
+function confirmarEnvio() {
+    var combo = document.getElementById("descripcion");
+    selected = combo.options[combo.selectedIndex].text;
+    datos = new FormData(document.getElementById('formulario'));
+    console.log('opss', selected)
+    fetch('/api/confirmarIngreso', {
+        method: "POST",
+        headers: {
+            'Accept': 'application/json',
+            'Content-type': 'application/json',
+        },
+        body: JSON.stringify({
+            // orden: datos.get('orden'),
+            // descripcion: selected
+        })
+    })
+    alert('PRODUCTOS GUARDADOS');
+}
 
 function enviarDatos(event) {
-   
+
     datos = new FormData(document.getElementById('formulario'));
-    console.log('opss',selected)
-    //datos.append ('cantidad',cantidad);
+  
     fetch('/api/productosFiltrado', {
         method: "POST",
         headers: {
@@ -40,9 +57,11 @@ function enviarDatos(event) {
         body: JSON.stringify({
             descripcion: selected,
             orden: datos.get('orden'),
-            cantidad: cantidad
+            cantidad: cantidad,
+            iProducto : datos.get("descripcion")
         })
     })
+    console.log('opss', datos.get("descripcion"))
 }
 class Form extends Component {
 
@@ -61,7 +80,8 @@ class Form extends Component {
             dbFiltrado: [],
             dbSellIn: 0,
             sellIn: 0,
-            saldo: 0
+            saldo: 0,
+            unidad: 0
         });
         this.mostrarOrdensExpress();
         this.mostrarProductosFiltradoExpress();
@@ -74,6 +94,7 @@ class Form extends Component {
         this.volverTotal = this.volverTotal.bind(this);
         this.mostrarProductosFiltradoExpress = this.mostrarProductosFiltradoExpress.bind(this);
         this.agregarDatosNoDeclarado = this.agregarDatosNoDeclarado.bind(this);
+        this.confirmarYActualizar = this.confirmarYActualizar.bind(this);
         //this.mostrarProductosFiltrado = this.mostrarProductosFiltrado.bind(this);
     }
     mostrarProductosFiltradoExpress() {
@@ -116,34 +137,39 @@ class Form extends Component {
             })
             this.state.dbSellIn.map((props) => {
                 this.setState({ sellIn: props.SellIn })
+                this.setState({ unidad: props.unidad })
+                this.setState({ saldo: props.iSaldo })
             })
-            this.setState({saldo:this.state.sellIn})
-            console.log(this.state.saldo)
         })();
         viaje = 0;
         total = 0;
         this.setState({ total: 0 });
         this.setState({ producto: '' })
         this.setState({ viaje: 0 })
-        
+        this.setState({ quantity: 0 })
     }
     agregarDatos(event) {
-        cantidad = Math.abs(this.state.quantity);
-        var combo = document.getElementById("descripcion");
-        selected = combo.options[combo.selectedIndex].text;
-        enviarDatos();
-        total = total + cantidad; // obtengo la cantidad de productos ingresados y los almaceno en total
-        this.setState({ total: total });
-        this.setState({ cantidad: cantidad });
-        producto = datos.get('descripcion');
-        this.setState({ producto: producto });
-        this.setState({ text: 'Registrado' });
-        this.setState({ color: 'success' });
-        viaje = viaje + 1;
-        this.setState({ viaje: viaje });
-        this.setState({saldo: this.state.saldo - this.state.quantity})
-        console.log('cantidad: ',this.state.quantity)
-        console.log('a ver: ',this.state.saldo)
+
+        if (this.state.saldo - this.state.quantity >= 0) {
+            cantidad = Math.abs(this.state.quantity);
+            var combo = document.getElementById("descripcion");
+            selected = combo.options[combo.selectedIndex].text;
+            enviarDatos();
+            total = total + cantidad; // obtengo la cantidad de productos ingresados y los almaceno en total
+            this.setState({ total: total });
+            this.setState({ cantidad: cantidad });
+            producto = datos.get('descripcion');
+            this.setState({ producto: producto });
+            this.setState({ text: 'Registrado' });
+            this.setState({ color: 'success' });
+            viaje = viaje + 1;
+            this.setState({ viaje: viaje });
+            this.setState({ saldo: this.state.saldo - this.state.quantity })
+            console.log('cantidad: ', this.state.quantity)
+            console.log('a ver: ', this.state.saldo)
+        } else {
+            alert('NO SE PUEDE INGRESAR PORQUE SE AGOTÓ EL SELL IN')
+        }
     }
     eliminarDatos() {
         cantidad = (Math.abs(this.state.quantity)) * -1;
@@ -157,6 +183,8 @@ class Form extends Component {
         this.setState({ producto: producto });
         this.setState({ text: 'Eliminado' });
         this.setState({ color: 'danger' });
+        viaje = viaje - 1;
+        this.setState({ viaje: viaje });
     }
     agregarDatosNoDeclarado(event) {
         cantidad = Math.abs(this.state.quantity);
@@ -170,11 +198,11 @@ class Form extends Component {
         this.setState({ producto: producto });
         this.setState({ text: 'Registrado' });
         this.setState({ color: 'success' });
-        viaje = viaje + 1;
-        this.setState({ viaje: viaje });
-        this.setState({saldo: this.state.saldo - this.state.quantity})
-        console.log('cantidad: ',this.state.quantity)
-        console.log('a ver: ',this.state.saldo)
+        //viaje = viaje + 1;
+        //this.setState({ viaje: viaje });
+        //this.setState({ saldo: this.state.saldo - this.state.quantity })
+        console.log('cantidad: ', this.state.quantity)
+        //console.log('a ver: ', this.state.saldo)
     }
 
     handleAdd5() {
@@ -207,6 +235,18 @@ class Form extends Component {
         //     }
     }
 
+    confirmarYActualizar() {
+        confirmarEnvio();
+        var Formulario = new FormData(document.getElementById('formulario'));
+        fetch('/api/productosFiltrado/' + Formulario.get('orden'))
+            .then((response) => response.json())
+            .then((dbFiltrado) => {
+                this.setState({
+                    dbFiltrado
+                }, () => console.log('fetchea2 ', dbFiltrado));
+            });
+    }
+
     render() {
         return (
             <div className="container-fluid">
@@ -214,8 +254,8 @@ class Form extends Component {
                     <div className="content mt-5 ml-4 d-flex">
                         <form id="formulario" name="form">
                             <div className="row mt-4">
-                                <div className="col-4">
-                                    <select id="orden" name="orden" className="form-control" onChange={this.mostrarProductosFiltradoExpress}>
+                                <div className="col-12">
+                                    <select id="orden" name="orden" className="custom-select" onChange={this.mostrarProductosFiltradoExpress}>
                                         <option>Seleccionar Orden</option>
                                         {this.state.db.map((props, index) => {
                                             return (
@@ -224,17 +264,37 @@ class Form extends Component {
                                         })}
                                     </select>
                                 </div>
-                                <div className="col-8">
-                                    <select  id="descripcion" name="descripcion"  className="form-control" onChange={this.volverTotal}>
+                            </div>
+                            <div className="row mt-4">
+                                <div className="col-12">
+                                    <select id="descripcion" name="descripcion" className="form-control" onChange={this.volverTotal}>
                                         <option>Seleccionar Producto</option>
                                         {this.state.dbFiltrado.map((props, index) => {
                                             //console.log(props.pro_iId)
+                                            if (props.pro_iSaldo === 0){
+                                                color = 'green';
+                                            }else{
+                                                color = '';
+                                            }
                                             return (
-                                                <option value={props.pro_iId}>{props.DesIte}</option>
+                                                <option className={color} id={props.pro_iId} 
+                                                value={props.pro_iId}>{props.DesIte}</option>
                                             )
 
                                         })}
                                     </select>
+                                </div>
+                            </div>
+                            <div className="row mt-3">
+                                <div className="col-5">
+                                    <input
+                                        type="text"
+                                        id="disabledTextInput"
+                                        name="unidad"
+                                        className="form-control"
+                                        placeholder="unidad"
+                                        value={'U. de Medida : ' + this.state.unidad}
+                                        disabled />
                                 </div>
                             </div>
                             <div className="row mt-3">
@@ -248,15 +308,24 @@ class Form extends Component {
                                         value={'SELL IN: ' + this.state.sellIn}
                                         disabled />
                                 </div>
+                            </div>
+                            <div className="row mt-3">
+                                <div className="col-4">
+                                    <input
+                                        type="text"
+                                        id="disabledTextInput"
+                                        name="sellIn"
+                                        className="form-control"
+                                        placeholder="sellIn"
+                                        value={'Cantidad por viaje: ' + this.state.quantity}
+                                        disabled />
+                                </div>
                                 <div className="col-2">
                                     <button type="button"
                                         className="btn btn-success btn-circle btn-xl btn-df"
                                         onClick={this.handleAdd5}>
                                         <i class='fas fa-plus'></i>
                                     </button>
-                                </div>
-                                <div className="col-4">
-                                    <button type="button" className='btn btn-info'>Seleccionando {this.state.quantity} {this.state.db.id}</button>
                                 </div>
                                 <div className="col-2">
                                     <button type="button"
@@ -282,7 +351,7 @@ class Form extends Component {
                                                 type="text"
                                                 id="disabledTextInput"
                                                 name="total"
-                                                className="form-control"
+                                                className="totalIngresado"
                                                 placeholder="total"
                                                 value={'Total ingresado: ' + this.state.total}
                                                 disabled />
@@ -336,20 +405,25 @@ class Form extends Component {
                                 </div>
                                 <div className="col-8">
                                     <button type="button"
-                                        className="btn btn-warning btn-circle btn-xl btn-df"
+                                        className="btn btn-warning btn-circle btn-xl"
                                         onClick={this.agregarDatosNoDeclarado}>
                                         <i class="fas fa-sign-in-alt"></i>
                                     </button>
                                 </div>
                             </div>
-                            <div className="row mt-3">
+                            <div className="row mt-4">
+                                <div className="col">
+                                    <button type="button" onClick={this.confirmarYActualizar} className='btn btn-info'>Confirmar Ingreso de orden</button>
+                                </div>
+                            </div>
+                            {/* <div className="row mt-3">
                                 <div className="col">
                                     <div id="registered" className={"alert alert-" + this.state.color}>
                                         <strong>Hecho!</strong> Has {this.state.text} {this.state.cantidad}
                                     </div>
                                 </div>
 
-                            </div>
+                            </div> */}
                         </form>
                     </div>
                     {/*<div className="content ml-5 mt-5">
