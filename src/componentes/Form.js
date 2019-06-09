@@ -21,7 +21,8 @@ function enviarNoDeclarado(event) {
         body: JSON.stringify({
             descripcion: selected,
             orden: datos.get('orden'),
-            cantidad: cantidad
+            cantidad: cantidad,
+            id: datos.get('descripcion')
         })
     })
 }
@@ -47,7 +48,7 @@ function confirmarEnvio() {
 function enviarDatos(event) {
 
     datos = new FormData(document.getElementById('formulario'));
-  
+
     fetch('/api/productosFiltrado', {
         method: "POST",
         headers: {
@@ -58,7 +59,7 @@ function enviarDatos(event) {
             descripcion: selected,
             orden: datos.get('orden'),
             cantidad: cantidad,
-            iProducto : datos.get("descripcion")
+            iProducto: datos.get("descripcion")
         })
     })
     console.log('opss', datos.get("descripcion"))
@@ -81,7 +82,8 @@ class Form extends Component {
             dbSellIn: 0,
             sellIn: 0,
             saldo: 0,
-            unidad: 0
+            unidad: 0,
+            noDeclarado: 0
         });
         this.mostrarOrdensExpress();
         this.mostrarProductosFiltradoExpress();
@@ -139,6 +141,7 @@ class Form extends Component {
                 this.setState({ sellIn: props.SellIn })
                 this.setState({ unidad: props.unidad })
                 this.setState({ saldo: props.iSaldo })
+                this.setState({noDeclarado:0})
             })
         })();
         viaje = 0;
@@ -192,12 +195,13 @@ class Form extends Component {
         selected = combo.options[combo.selectedIndex].text;
         enviarNoDeclarado();
         total = total + cantidad; // obtengo la cantidad de productos ingresados y los almaceno en total
-        this.setState({ total: total });
+        //this.setState({ total: total });
         this.setState({ cantidad: cantidad });
         producto = datos.get('descripcion');
         this.setState({ producto: producto });
         this.setState({ text: 'Registrado' });
         this.setState({ color: 'success' });
+        this.setState({ noDeclarado: this.state.noDeclarado + 1 })
         //viaje = viaje + 1;
         //this.setState({ viaje: viaje });
         //this.setState({ saldo: this.state.saldo - this.state.quantity })
@@ -271,14 +275,14 @@ class Form extends Component {
                                         <option>Seleccionar Producto</option>
                                         {this.state.dbFiltrado.map((props, index) => {
                                             //console.log(props.pro_iId)
-                                            if (props.pro_iSaldo === 0){
+                                            if (props.pro_iSaldo === 0) {
                                                 color = 'green';
-                                            }else{
+                                            } else {
                                                 color = '';
                                             }
                                             return (
-                                                <option className={color} id={props.pro_iId} 
-                                                value={props.pro_iId}>{props.DesIte}</option>
+                                                <option className={color} id={props.pro_iId}
+                                                    value={props.pro_iId}>{props.DesIte}</option>
                                             )
 
                                         })}
@@ -403,12 +407,15 @@ class Form extends Component {
                                 <div className="col-4">
 
                                 </div>
-                                <div className="col-8">
+                                <div className="col-4">
                                     <button type="button"
                                         className="btn btn-warning btn-circle btn-xl"
                                         onClick={this.agregarDatosNoDeclarado}>
                                         <i class="fas fa-sign-in-alt"></i>
                                     </button>
+                                </div>
+                                <div className="col-4 mt-2">
+                                    <button type="button" className='btn btn-warning'>Cortesía: {this.state.noDeclarado}</button>
                                 </div>
                             </div>
                             <div className="row mt-4">

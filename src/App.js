@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Form from './componentes/Form';
 import './App.css';
 import Header from './componentes/Header';
+import Consultas from './componentes/Consultas';
 
 class App extends Component {
   
@@ -9,7 +10,8 @@ class App extends Component {
     return (
       <div className="App">
         <Header/> 
-        <Form/>
+        {/* <Form/> */}
+        <Consultas/>
       </div>
     );
   }
