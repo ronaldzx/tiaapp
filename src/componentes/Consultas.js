@@ -1,36 +1,56 @@
 import React, { Component } from 'react';
 import ContentEditable from 'react-contenteditable';
-var datos;
-
-function obtenerId (){
-    datos = new FormData(document.getElementById('formulario'));
-    console.log(datos.get('orden'));    
-}
-
+var auxId = 0;
+var auxValor = 0;
+var datos = {
+    idProducto: [],
+    fValor: []
+};
 class Consultas extends Component {
-
     constructor() {
         super();
         this.contentEditable = React.createRef();
         this.state = ({
             db: [],
             dbProductos: [],
-            cliente: '',
-            sku: [],
-            um: '',
-            cant: '',
-            salen: '',
-            saldo: ''
-
+            iCantidad: 0,
+            datos: {
+                idProducto: [],
+                fValor: []
+            }
         });
+
         this.mostrarOrdensExpress();
         //this.handleChange = this.handleChange.bind(this);
         this.mostrarOrdensExpress = this.mostrarOrdensExpress.bind(this);
         this.volverTotal = this.volverTotal.bind(this);
+        this.getId = this.getId.bind(this);
+        this.enviar = this.enviar.bind(this);
     }
     // handleChange = evt => {
     //     this.setState({ html: evt.target.value });
     // };
+    enviar(e) {
+        e.preventDefault();
+        console.log(this.state.datos);
+        console.log(this.state.datos.fValor);
+    }
+    getId(e) {
+        auxId = 0;
+        auxValor = 0;
+        if (e.target.id != auxId && e.target.value === auxValor) {
+
+        }
+        this.state.datos.idProducto.push(e.target.id)
+        this.state.datos.fValor.push(e.target.value)
+        this.setState({
+            datos: { idProducto: e.target.id, fValor: e.target.value }
+        })
+        // datos.idProducto=e.target.id;
+        // datos.fValor=e.target.value;
+        // console.log('datos: ',datos.idProducto);
+        // console.log('valor: ',datos.fValor);
+    }
     mostrarOrdensExpress() {
         fetch('/api/productosFiltradoSalida')
             .then((response) => response.json())
@@ -60,13 +80,16 @@ class Consultas extends Component {
             this.state.dbProductos.map((props) => {
                 this.setState({ cliente: props.prosal_iCliente })
                 this.setState({ sku: props.prosal_vcProducto })
-                console.log('gaa', this.state.dbProductos)
             })
+            console.log('gaa', this.state.dbProductos)
         })();
         // this.setState({ total: 0 });
         // this.setState({ producto: '' })
         // this.setState({ viaje: 0 })
         // this.setState({ quantity: 0 })
+    }
+    handleInput(event) {
+
     }
     render() {
         return (
@@ -121,7 +144,7 @@ class Consultas extends Component {
                                             <div className="col-1 ajuste-font12bold">
                                                 <span>U.M.:</span>
                                             </div>
-                                            <div className="col-2 ajuste-font12">
+                                            <div className="col-1 ajuste-font12">
                                                 {props.prosal_vcMedida}
                                             </div>
                                             <div className="col-1 ajuste-font12bold">
@@ -140,10 +163,12 @@ class Consultas extends Component {
                                             </div>
                                             <div className="col-1">
                                                 <input
+                                                    key={props.prosal_iId}
                                                     type="text"
-                                                    id="disabledTextInput"
+                                                    id={props.prosal_iId}
                                                     name="salen"
                                                     className="form-control ajuste-font12"
+                                                    on={this.getId}
                                                 />
                                             </div>
                                             <div className="col-1 ajuste-font12bold">
@@ -152,13 +177,16 @@ class Consultas extends Component {
                                             <div className="col-1">
                                                 {props.prosal_fSaldo}
                                             </div>
+                                            <div className="col-1">
+                                                <button type="button" className='btn btn-info' >Ingresar</button>
+                                            </div>
                                         </div>
                                     </div>
                                 )
                             })}
                             <div class="row justify-content-start mt-4">
                                 <div className="col">
-                                    <button type="button" className='btn btn-info'>Confirmar Ingreso de orden</button>
+                                    <button type="button" onClick={this.enviar} className='btn btn-info'>Confirmar Ingreso de orden</button>
                                 </div>
                             </div>
                             {/* <div>
