@@ -26,14 +26,47 @@ class Consultas extends Component {
         this.volverTotal = this.volverTotal.bind(this);
         this.getId = this.getId.bind(this);
         this.enviar = this.enviar.bind(this);
+        //this.ingresarDatos= this.ingresarDatos.bind(this)
     }
     // handleChange = evt => {
     //     this.setState({ html: evt.target.value });
     // };
     enviar(e) {
         e.preventDefault();
-        console.log(this.state.datos);
+        console.log(e.target.id);
         console.log(this.state.datos.fValor);
+    }
+    ingresarDatos(id) {
+        var Formulario = new FormData(document.getElementById('formulario'));
+        var fSalen = Formulario.get(id);
+        fetch('/api/insertarConsultas', {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: id,
+                salen: fSalen
+            })
+        });
+        const data = (async () => {
+            const rawResponse = await fetch('/api/productosSalida', {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-type': 'application/json',
+                },
+                body: JSON.stringify({
+                    codigoDocumento: Formulario.get('factura')
+                })
+            });
+            const content = await rawResponse.json();
+            this.setState({
+                dbProductos: content
+            })
+        })();
+        console.log('ID PRODUCTO: ', id, 'fSalen: ', fSalen)
     }
     getId(e) {
         auxId = 0;
@@ -135,6 +168,13 @@ class Consultas extends Component {
                                 </div>
                             </div>
                             {this.state.dbProductos.map((props) => {
+                                if (props.prosal_fSaldo > 0) {
+                                    var check = 'check';
+                                    var icono = 'fas fa-check';
+                                } else {
+                                    check = '';
+                                    icono = '';
+                                }
                                 return (
                                     <div>
                                         <div className="row justify-content-start mt-4 ">
@@ -154,9 +194,10 @@ class Consultas extends Component {
                                                 <span>{props.prosal_fCantidad}</span>
                                             </div>
                                             <div className="col-1">
-                                                <span className="check">
-                                                    <i class="fas fa-check"></i>
+                                                <span className={check}>
+                                                    <i class={icono}></i>
                                                 </span>
+
                                             </div>
                                             <div className="col-1 ajuste-font12bold">
                                                 <span>SALEN:</span>
@@ -166,7 +207,7 @@ class Consultas extends Component {
                                                     key={props.prosal_iId}
                                                     type="text"
                                                     id={props.prosal_iId}
-                                                    name="salen"
+                                                    name={props.prosal_iId}
                                                     className="form-control ajuste-font12"
                                                     on={this.getId}
                                                 />
@@ -178,7 +219,7 @@ class Consultas extends Component {
                                                 {props.prosal_fSaldo}
                                             </div>
                                             <div className="col-1">
-                                                <button type="button" className='btn btn-info' >Ingresar</button>
+                                                <button type="button" onClick={this.ingresarDatos.bind(this, props.prosal_iId)} className='btn btn-info' >Ingresar</button>
                                             </div>
                                         </div>
                                     </div>
