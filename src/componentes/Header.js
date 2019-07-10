@@ -9,10 +9,7 @@ class Header extends Component {
         return(
         <div className="pos-f-t">
               <div className="d-flex justify-content-center bg-dark p-4">
-                {/* <div>                
-                  <img src={logo} width="90px"  alt=""/>
-                  <span style={color}>SISTEMA DE CONTROL DE INGRESO Y SALIDA DE PRODUCTOS</span>
-                </div> */}
+
               </div>
         </div>
         );        

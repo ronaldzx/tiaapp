@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import ContentEditable from 'react-contenteditable';
+import { Route, Switch, Link, Redirect } from 'react-router-dom';
+import Form from './Form';
+import Home from '../Home';
 var auxId = 0;
 var auxValor = 0;
 var datos = {
@@ -11,9 +14,17 @@ class Consultas extends Component {
         super();
         this.contentEditable = React.createRef();
         this.state = ({
-            db: [],
+            dbBoleta: [],
+            dbFactura: [],
+            dbFacturacion: [],
             dbProductos: [],
             iCantidad: 0,
+            cValue:'',
+            cliente : '',
+            cTipoDoc:'',
+            colorBoleta:'',
+            colorFactura:'',
+            colorFacturacion:'',
             datos: {
                 idProducto: [],
                 fValor: []
@@ -21,8 +32,12 @@ class Consultas extends Component {
         });
 
         this.mostrarOrdensExpress();
+        this.mostrarOrdensExpressBoleta();
+        this.mostrarOrdensExpressFacturacion();
         //this.handleChange = this.handleChange.bind(this);
         this.mostrarOrdensExpress = this.mostrarOrdensExpress.bind(this);
+        this.mostrarOrdensExpressBoleta = this.mostrarOrdensExpressBoleta.bind(this);
+        this.mostrarOrdensExpressFacturacion = this.mostrarOrdensExpressFacturacion.bind(this);
         this.volverTotal = this.volverTotal.bind(this);
         this.getId = this.getId.bind(this);
         this.enviar = this.enviar.bind(this);
@@ -35,7 +50,7 @@ class Consultas extends Component {
         e.preventDefault();
         console.log(e.target.id);
         console.log(this.state.datos.fValor);
-    }
+    }    
     ingresarDatos(id) {
         var Formulario = new FormData(document.getElementById('formulario'));
         var fSalen = Formulario.get(id);
@@ -58,7 +73,7 @@ class Consultas extends Component {
                     'Content-type': 'application/json',
                 },
                 body: JSON.stringify({
-                    codigoDocumento: Formulario.get('factura')
+                    codigoDocumento: Formulario.get(this.state.cTipoDoc)
                 })
             });
             const content = await rawResponse.json();
@@ -66,7 +81,7 @@ class Consultas extends Component {
                 dbProductos: content
             })
         })();
-        console.log('ID PRODUCTO: ', id, 'fSalen: ', fSalen)
+        console.log('ID PRODUCTO: ', id, 'fSalen: ', fSalen, ' tipodoc: ',this.state.cTipoDoc)
     }
     getId(e) {
         auxId = 0;
@@ -85,16 +100,37 @@ class Consultas extends Component {
         // console.log('valor: ',datos.fValor);
     }
     mostrarOrdensExpress() {
-        fetch('/api/productosFiltradoSalida')
+        fetch('/api/productosFiltradoSalidaFactura')
             .then((response) => response.json())
-            .then((db) => {
+            .then((dbFactura) => {
                 this.setState({
-                    db
-                }, () => console.log('fetchea4 ', db));
+                    dbFactura
+                }, () => console.log('fetchea4 ', dbFactura));
+            });
+    }
+    mostrarOrdensExpressBoleta() {
+        fetch('/api/productosFiltradoSalidaBoleta')
+            .then((response) => response.json())
+            .then((dbBoleta) => {
+                this.setState({
+                    dbBoleta
+                }, () => console.log('fetchea4 ', dbBoleta));
+            });
+    }
+    mostrarOrdensExpressFacturacion() {
+        fetch('/api/productosFiltradoSalidaFacturacion')
+            .then((response) => response.json())
+            .then((dbFacturacion) => {
+                this.setState({
+                    dbFacturacion
+                }, () => console.log('fetchea4 ', dbFacturacion));
             });
     }
     async volverTotal(event) { // esto me regresa el total a 0 // esto se llama en el evento OnChange del combobox
         const bas = event.target.value;
+        this.setState({
+            cTipoDoc:event.target.name
+        })
         const data = (async () => {
             const rawResponse = await fetch('/api/productosSalida', {
                 method: "POST",
@@ -125,6 +161,11 @@ class Consultas extends Component {
 
     }
     render() {
+        const Consultas = () => (
+            <Switch>
+                <Route path='/Form' component={Form} />
+            </Switch>
+        )
         return (
             <div className="container-fluid">
                 <div id='form' className="container d-flex mt-4 pb-5 ">
@@ -132,11 +173,11 @@ class Consultas extends Component {
                         <form id="formulario" name="form" className="container">
                             <div className="row mt-4">
                                 <div className="col-3">
-                                    <select id="factura" name="factura" className="custom-select" onChange={this.volverTotal}>
+                                    <select id="factura" name="factura" className={"custom-select "+this.state.colorFactura} onChange={this.volverTotal}>
                                         <option>Seleccionar Factura</option>
-                                        {this.state.db.map((props) => {
+                                        {this.state.dbFactura.map((props) => {
                                             return (
-                                                <option>{props.prosal_iCodigoDocumento}</option>
+                                                <option>{props.prosal_vcDocumento}</option>
                                             )
                                         })}
                                     </select>
@@ -144,15 +185,25 @@ class Consultas extends Component {
                             </div>
                             <div className="row mt-4">
                                 <div className="col-3">
-                                    <select id="boleta" name="boleta" className="custom-select">
+                                    <select id="boleta" name="boleta" className={"custom-select "+this.state.colorBoleta} onChange={this.volverTotal}>
                                         <option>Seleccionar Boleta</option>
+                                        {this.state.dbBoleta.map((props) => {
+                                            return (
+                                                <option>{props.prosal_vcDocumento}</option>
+                                            )
+                                        })}                                        
                                     </select>
                                 </div>
                             </div>
                             <div className="row mt-4">
                                 <div className="col-3">
-                                    <select id="ordenfactura" name="ordenfactura" className="custom-select">
+                                    <select id="ordenfactura" name="ordenfactura" className={"custom-select "+this.state.colorFacturacion} onChange={this.volverTotal}>
                                         <option>Seleccionar Orden Factura</option>
+                                        {this.state.dbFacturacion.map((props) => {
+                                            return (
+                                                <option>{props.prosal_vcDocumento}</option>
+                                            )
+                                        })}                                        
                                     </select>
                                 </div>
                             </div>
@@ -164,7 +215,8 @@ class Consultas extends Component {
                                         id="disabledTextInput"
                                         name="cliente"
                                         className="form-control"
-                                        disabled />
+                                        disabled
+                                        value={this.state.cliente} />
                                 </div>
                             </div>
                             {this.state.dbProductos.map((props) => {
@@ -205,7 +257,7 @@ class Consultas extends Component {
                                             <div className="col-1">
                                                 <input
                                                     key={props.prosal_iId}
-                                                    type="text"
+                                                    type="tel"
                                                     id={props.prosal_iId}
                                                     name={props.prosal_iId}
                                                     className="form-control ajuste-font12"
@@ -225,9 +277,16 @@ class Consultas extends Component {
                                     </div>
                                 )
                             })}
-                            <div class="row justify-content-start mt-4">
+                            {/* <div class="row justify-content-start mt-4">
                                 <div className="col">
                                     <button type="button" onClick={this.enviar} className='btn btn-info'>Confirmar Ingreso de orden</button>
+                                </div>
+                            </div> */}
+                            <div className="row mt-5">
+                                <div className="col">
+                                    <Link to={'./Home'}>
+                                        <button type="button" className='btn btn-success'>Regresar al Inicio</button>
+                                    </Link>
                                 </div>
                             </div>
                             {/* <div>

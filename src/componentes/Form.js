@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { Route, Switch, Link, Redirect } from 'react-router-dom';
+import Consultas from './Consultas';
+import Home from '../Home';
 var cantidad = 0;
 var total = 0;
 var producto = '';
@@ -10,7 +13,7 @@ var color = '';
 function enviarNoDeclarado(event) {
 
     datos = new FormData(document.getElementById('formulario'));
-    console.log('opss', selected)
+    console.log('opss', selected);
     //datos.append ('cantidad',cantidad);
     fetch('/api/productoNoDeclarado', {
         method: "POST",
@@ -65,7 +68,6 @@ function enviarDatos(event) {
     console.log('opss', datos.get("descripcion"))
 }
 class Form extends Component {
-
     constructor() {
         super();
         this.state = ({
@@ -86,7 +88,7 @@ class Form extends Component {
             noDeclarado: 0
         });
         this.mostrarOrdensExpress();
-        this.mostrarProductosFiltradoExpress();
+        //this.mostrarProductosFiltradoExpress();
         //this.mostrarProductos();
         //this.mostrarProductosFiltrado();
         this.handleAdd5 = this.handleAdd5.bind(this);
@@ -101,13 +103,49 @@ class Form extends Component {
     }
     mostrarProductosFiltradoExpress() {
         var Formulario = new FormData(document.getElementById('formulario'));
-        fetch('/api/productosFiltrado/' + Formulario.get('orden'))
-            .then((response) => response.json())
-            .then((dbFiltrado) => {
-                this.setState({
-                    dbFiltrado
-                }, () => console.log('fetchea2 ', dbFiltrado));
+        const desc = Formulario.get("descripcion");
+        const data = (async () => {
+            const rawResponse = await fetch('/api/productosFiltradoString', {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-type': 'application/json',
+                },
+                body: JSON.stringify({
+                    orden: Formulario.get("orden")
+                })
             });
+            const content = await rawResponse.json();
+            this.setState({
+                dbFiltrado: content
+            });
+            const fetchProduct = await fetch('/api/productosSell', {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: desc
+                })
+            });
+            const contenido = await fetchProduct.json();
+            this.setState({
+                dbSellIn: contenido
+            })
+            this.state.dbSellIn.map((props) => {
+                this.setState({ sellIn: props.SellIn })
+                this.setState({ unidad: props.unidad })
+                this.setState({ saldo: props.iSaldo })
+                this.setState({ noDeclarado: 0 })
+            })
+            viaje = 0;
+            total = 0;
+            this.setState({ total: 0 });
+            this.setState({ producto: '' })
+            this.setState({ viaje: 0 })
+            this.setState({ quantity: 0 })
+        })();
     }
 
     mostrarOrdensExpress() {
@@ -141,7 +179,7 @@ class Form extends Component {
                 this.setState({ sellIn: props.SellIn })
                 this.setState({ unidad: props.unidad })
                 this.setState({ saldo: props.iSaldo })
-                this.setState({noDeclarado:0})
+                this.setState({ noDeclarado: 0 })
             })
         })();
         viaje = 0;
@@ -195,63 +233,50 @@ class Form extends Component {
         selected = combo.options[combo.selectedIndex].text;
         enviarNoDeclarado();
         total = total + cantidad; // obtengo la cantidad de productos ingresados y los almaceno en total
-        //this.setState({ total: total });
         this.setState({ cantidad: cantidad });
         producto = datos.get('descripcion');
         this.setState({ producto: producto });
         this.setState({ text: 'Registrado' });
         this.setState({ color: 'success' });
         this.setState({ noDeclarado: this.state.noDeclarado + 1 })
-        //viaje = viaje + 1;
-        //this.setState({ viaje: viaje });
-        //this.setState({ saldo: this.state.saldo - this.state.quantity })
-        console.log('cantidad: ', this.state.quantity)
-        //console.log('a ver: ', this.state.saldo)
     }
 
     handleAdd5() {
         this.setState({ quantity: this.state.quantity + 1 })
-        // var modulo = 0;
-        // modulo = this.state.quantity % 5;
-        // if (modulo > 0) {
-        //     this.setState({ quantity: this.state.quantity + (5 - modulo) })
-        // } else if (modulo === 0) {
-        //     this.setState({ quantity: this.state.quantity + 5 })
-        // } else {
-        //     this.setState({ quantity: this.state.quantity - modulo })
-        // }
     }
     handleDelete5() {
         if (this.state.quantity > 0) {
             this.setState({ quantity: this.state.quantity - 1 })
         }
-        // var modulo = 0;
-        // modulo = this.state.quantity % 5;
-        // if (this.state.quantity < 1) {
-        //     this.setState({ quantity: 0 });
-        // } else
-        //     if (modulo > 0) {
-        //         this.setState({ quantity: this.state.quantity - modulo })
-        //     } else if (modulo === 0) {
-        //         this.setState({ quantity: this.state.quantity - 5 })
-        //     } else {
-        //         this.setState({ quantity: this.state.quantity - (5 + modulo) })
-        //     }
     }
 
     confirmarYActualizar() {
         confirmarEnvio();
         var Formulario = new FormData(document.getElementById('formulario'));
-        fetch('/api/productosFiltrado/' + Formulario.get('orden'))
-            .then((response) => response.json())
-            .then((dbFiltrado) => {
-                this.setState({
-                    dbFiltrado
-                }, () => console.log('fetchea2 ', dbFiltrado));
+        const data = (async () => {
+            const rawResponse = await fetch('/api/productosFiltradoString', {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-type': 'application/json',
+                },
+                body: JSON.stringify({
+                    orden: Formulario.get("orden")
+                })
             });
+            const content = await rawResponse.json();
+            this.setState({
+                dbFiltrado: content
+            })
+        })();
     }
 
     render() {
+        const Form = () => (
+            <Switch>
+                <Route path='/Consultas' component={Consultas} />
+            </Switch>
+        )
         return (
             <div className="container-fluid">
                 <div id='form' className="container d-flex mt-4 pb-5 justify-content-md-center">
@@ -274,7 +299,6 @@ class Form extends Component {
                                     <select id="descripcion" name="descripcion" className="form-control" onChange={this.volverTotal}>
                                         <option>Seleccionar Producto</option>
                                         {this.state.dbFiltrado.map((props, index) => {
-                                            //console.log(props.pro_iId)
                                             if (props.pro_iSaldo === 0) {
                                                 color = 'green';
                                             } else {
@@ -421,6 +445,13 @@ class Form extends Component {
                             <div className="row mt-4">
                                 <div className="col">
                                     <button type="button" onClick={this.confirmarYActualizar} className='btn btn-info'>Confirmar Ingreso de orden</button>
+                                </div>
+                            </div>
+                            <div className="row mt-5">
+                                <div className="col">
+                                    <Link to={'./Home'}>
+                                        <button type="button" className='btn btn-success'>Regresar Al inicio</button>
+                                    </Link>
                                 </div>
                             </div>
                             {/* <div className="row mt-3">
