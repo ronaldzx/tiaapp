@@ -18,6 +18,7 @@ class Consultas extends Component {
             dbFactura: [],
             dbFacturacion: [],
             dbProductos: [],
+            dbDespachoMultiple: [],
             iCantidad: 0,
             cValue:'',
             cliente : '',
@@ -34,10 +35,12 @@ class Consultas extends Component {
         this.mostrarOrdensExpress();
         this.mostrarOrdensExpressBoleta();
         this.mostrarOrdensExpressFacturacion();
+        this.mostrarOrdensExpressDespachoMultiple();
         //this.handleChange = this.handleChange.bind(this);
         this.mostrarOrdensExpress = this.mostrarOrdensExpress.bind(this);
         this.mostrarOrdensExpressBoleta = this.mostrarOrdensExpressBoleta.bind(this);
         this.mostrarOrdensExpressFacturacion = this.mostrarOrdensExpressFacturacion.bind(this);
+        this.mostrarOrdensExpressDespachoMultiple = this.mostrarOrdensExpressDespachoMultiple.bind(this);
         this.volverTotal = this.volverTotal.bind(this);
         this.getId = this.getId.bind(this);
         this.enviar = this.enviar.bind(this);
@@ -126,6 +129,15 @@ class Consultas extends Component {
                 }, () => console.log('fetchea4 ', dbFacturacion));
             });
     }
+    mostrarOrdensExpressDespachoMultiple() {
+        fetch('/api/productosFiltradoSalidaDespachoMultiple')
+            .then((response) => response.json())
+            .then((dbDespachoMultiple) => {
+                this.setState({
+                    dbDespachoMultiple
+                }, () => console.log('fetchea5 ', dbDespachoMultiple));
+            });
+    }    
     async volverTotal(event) { // esto me regresa el total a 0 // esto se llama en el evento OnChange del combobox
         const bas = event.target.value;
         this.setState({
@@ -200,6 +212,18 @@ class Consultas extends Component {
                                     <select id="ordenfactura" name="ordenfactura" className={"custom-select "+this.state.colorFacturacion} onChange={this.volverTotal}>
                                         <option>Seleccionar Orden Factura</option>
                                         {this.state.dbFacturacion.map((props) => {
+                                            return (
+                                                <option>{props.prosal_vcDocumento}</option>
+                                            )
+                                        })}                                        
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="row mt-4">
+                                <div className="col-3">
+                                    <select id="ordenfactura" name="ordenfactura" className={"custom-select "+this.state.colorFacturacion} onChange={this.volverTotal}>
+                                        <option>Seleccionar Despacho Múltiple</option>
+                                        {this.state.dbDespachoMultiple.map((props) => {
                                             return (
                                                 <option>{props.prosal_vcDocumento}</option>
                                             )
@@ -284,9 +308,10 @@ class Consultas extends Component {
                             </div> */}
                             <div className="row mt-5">
                                 <div className="col">
-                                    <Link to={'./Home'}>
+                                    <a href="/Home">Regresar Al inicio</a>
+                                    {/* <Link to={'./Home'}>
                                         <button type="button" className='btn btn-success'>Regresar al Inicio</button>
-                                    </Link>
+                                    </Link> */}
                                 </div>
                             </div>
                             {/* <div>
