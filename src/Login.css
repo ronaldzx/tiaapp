@@ -36,6 +36,13 @@ cursor: pointer;
 .card-header h3{
 color: white;
 }
+.card-header h5{
+    color: white;
+}
+.bg-dark h5{
+    align-content: left;
+    color: white;
+}
 
 .social_icon{
 position: absolute;

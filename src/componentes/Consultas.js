@@ -26,6 +26,7 @@ class Consultas extends Component {
             colorBoleta:'',
             colorFactura:'',
             colorFacturacion:'',
+            redirect: false,
             datos: {
                 idProducto: [],
                 fValor: []
@@ -36,7 +37,6 @@ class Consultas extends Component {
         this.mostrarOrdensExpressBoleta();
         this.mostrarOrdensExpressFacturacion();
         this.mostrarOrdensExpressDespachoMultiple();
-        //this.handleChange = this.handleChange.bind(this);
         this.mostrarOrdensExpress = this.mostrarOrdensExpress.bind(this);
         this.mostrarOrdensExpressBoleta = this.mostrarOrdensExpressBoleta.bind(this);
         this.mostrarOrdensExpressFacturacion = this.mostrarOrdensExpressFacturacion.bind(this);
@@ -44,11 +44,14 @@ class Consultas extends Component {
         this.volverTotal = this.volverTotal.bind(this);
         this.getId = this.getId.bind(this);
         this.enviar = this.enviar.bind(this);
-        //this.ingresarDatos= this.ingresarDatos.bind(this)
     }
-    // handleChange = evt => {
-    //     this.setState({ html: evt.target.value });
-    // };
+    componentDidMount(){
+        if (sessionStorage.getItem('responseJson')) {
+            console.log('conecta2')
+        }else{
+            this.setState({redirect:true})
+        }
+    }
     enviar(e) {
         e.preventDefault();
         console.log(e.target.id);
@@ -97,10 +100,6 @@ class Consultas extends Component {
         this.setState({
             datos: { idProducto: e.target.id, fValor: e.target.value }
         })
-        // datos.idProducto=e.target.id;
-        // datos.fValor=e.target.value;
-        // console.log('datos: ',datos.idProducto);
-        // console.log('valor: ',datos.fValor);
     }
     mostrarOrdensExpress() {
         fetch('/api/productosFiltradoSalidaFactura')
@@ -164,15 +163,11 @@ class Consultas extends Component {
             })
             console.log('gaa', this.state.dbProductos)
         })();
-        // this.setState({ total: 0 });
-        // this.setState({ producto: '' })
-        // this.setState({ viaje: 0 })
-        // this.setState({ quantity: 0 })
-    }
-    handleInput(event) {
-
     }
     render() {
+        if (this.state.redirect) {
+            return (<Redirect to={'./'}/>)
+        }
         const Consultas = () => (
             <Switch>
                 <Route path='/Form' component={Form} />
@@ -301,53 +296,13 @@ class Consultas extends Component {
                                     </div>
                                 )
                             })}
-                            {/* <div class="row justify-content-start mt-4">
-                                <div className="col">
-                                    <button type="button" onClick={this.enviar} className='btn btn-info'>Confirmar Ingreso de orden</button>
-                                </div>
-                            </div> */}
                             <div className="row mt-5">
                                 <div className="col">
-                                    <a href="/Home">Regresar Al inicio</a>
-                                    {/* <Link to={'./Home'}>
+                                    <Link to={'./Home'}>
                                         <button type="button" className='btn btn-success'>Regresar al Inicio</button>
-                                    </Link> */}
+                                    </Link>
                                 </div>
                             </div>
-                            {/* <div>
-                                <table class="table">
-                                    <thead class="thead-dark">
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">SKU</th>
-                                            <th scope="col">U.M</th>
-                                            <th scope="col">ESTADO</th>
-                                            <th scope="col">SALEN</th>
-                                            <th scope="col">SALDO</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {this.state.dbProductos.map((props, index) => {
-                                            return (
-                                                <tr>
-                                                    <th scope="row">{index + 1}</th>
-                                                    <td className="contenteditable=true">{props.prosal_vcProducto}</td>
-                                                    <td>{props.prosal_vcMedida}</td>
-                                                    <td>0</td>
-                                                    <td><ContentEditable
-                                                        innerRef={this.contentEditable}
-                                                        html={this.state.html}
-                                                        disabled={false}
-                                                        onChange={this.handleChange}
-                                                        tagName='article'
-                                                    /></td>
-                                                    <td>0</td>
-                                                </tr>
-                                            )
-                                        })}
-                                    </tbody>
-                                </table>
-                            </div> */}
                         </form>
                     </div>
                 </div>

@@ -4,9 +4,28 @@ import Consultas from './componentes/Consultas';
 import Form from './componentes/Form';
 import App from './App';
 import ImgHome from './img/home.jpeg';
-import LogoTia from './img/logo_tia.png'
+import LogoTia from './img/logo_tia.png';
+import Logout from './componentes/Logout';
+import Login from './Login'
 class Home extends Component {
+    constructor(props) {
+        super(props);
+    
+        this.state = {
+          redirect: false
+        };
+    }
+    componentDidMount(){
+        if (sessionStorage.getItem('responseJson')) {
+            console.log('conecta2')
+        }else{
+            this.setState({redirect:true})
+        }
+    }
     render() {
+        if (this.state.redirect) {
+            return (<Redirect to={'./'}/>)
+        }
         const Home = () => (
             <Switch>
                 <Route path='/Consultas' component={Consultas} />
@@ -24,7 +43,7 @@ class Home extends Component {
                             SISTEMA DE REGISTRO Y COSNULTAS DE ALMACÉN
                         </div>
                         <div>
-                            <img className="logoTia" src={LogoTia}/>
+                            <img className="logoTia" src={LogoTia} />
                         </div>
                         <div className="row mt-5">
                             <div className="col">
@@ -36,6 +55,11 @@ class Home extends Component {
                                 <Link to={'./Form'}>
                                     <button type="button" className='btn btn-success'>Ir a Formulario</button>
                                 </Link>
+                            </div>
+                        </div>
+                        <div className="row mt-5">
+                            <div className="col">
+                                <Logout/>
                             </div>
                         </div>
                     </div>

@@ -41,8 +41,6 @@ function confirmarEnvio() {
             'Content-type': 'application/json',
         },
         body: JSON.stringify({
-            // orden: datos.get('orden'),
-            // descripcion: selected
         })
     })
     alert('PRODUCTOS GUARDADOS');
@@ -85,12 +83,10 @@ class Form extends Component {
             sellIn: 0,
             saldo: 0,
             unidad: 0,
+            redirect: false,
             noDeclarado: 0
         });
         this.mostrarOrdensExpress();
-        //this.mostrarProductosFiltradoExpress();
-        //this.mostrarProductos();
-        //this.mostrarProductosFiltrado();
         this.handleAdd5 = this.handleAdd5.bind(this);
         this.handleDelete5 = this.handleDelete5.bind(this);
         this.agregarDatos = this.agregarDatos.bind(this);
@@ -100,6 +96,13 @@ class Form extends Component {
         this.agregarDatosNoDeclarado = this.agregarDatosNoDeclarado.bind(this);
         this.confirmarYActualizar = this.confirmarYActualizar.bind(this);
         //this.mostrarProductosFiltrado = this.mostrarProductosFiltrado.bind(this);
+    }
+    componentDidMount() {
+        if (sessionStorage.getItem('responseJson')) {
+            console.log('conecta2')
+        } else {
+            this.setState({ redirect: true })
+        }
     }
     mostrarProductosFiltradoExpress() {
         var Formulario = new FormData(document.getElementById('formulario'));
@@ -154,7 +157,7 @@ class Form extends Component {
             .then((db) => {
                 this.setState({
                     db
-                }, () => console.log('fetchea3 ', db));
+                }, () => console.log('hecho ', db));
             });
     }
 
@@ -272,6 +275,9 @@ class Form extends Component {
     }
 
     render() {
+        if (this.state.redirect) {
+            return (<Redirect to={'./'} />)
+        }
         const Form = () => (
             <Switch>
                 <Route path='/Consultas' component={Consultas} />
@@ -454,54 +460,9 @@ class Form extends Component {
                                     </Link>
                                 </div>
                             </div>
-                            {/* <div className="row mt-3">
-                                <div className="col">
-                                    <div id="registered" className={"alert alert-" + this.state.color}>
-                                        <strong>Hecho!</strong> Has {this.state.text} {this.state.cantidad}
-                                    </div>
-                                </div>
 
-                            </div> */}
                         </form>
                     </div>
-                    {/*<div className="content ml-5 mt-5">
-                        <div className="row mt-5">
-                            <div className="col">
-
-                            </div>
-                        </div>
-                        <div className="row mt-4">
-                            <div className="col">
-                                <button type="button" className='btn btn-info'>Seleccionando {this.state.quantity} {this.state.db.id}</button>
-                            </div>
-                        </div>
-                        <div className="row mt-4">
-                            <div className="col">
-                                <button type="button"
-                                    className="btn btn-success btn-circle btn-xl btn-df"
-                                    onClick={this.handleAdd5}>
-                                    <i class='fas fa-plus'></i>
-                                </button>
-                            </div>
-                            <div className="col">
-                                <button type="button"
-                                    className="btn btn-danger btn-circle btn-xl btn-df"
-                                    onClick={this.handleDelete5}>
-                                    <i class="fas fa-minus"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div className="row mt-4">
-                            <div className="col">
-                                <button type="button"
-                                    className="btn btn-warning btn-circle btn-xl btn-df"
-                                    onClick={this.handleAdd5}>
-                                    <i class="fas fa-sign-in-alt"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>*/}
-
                 </div>
             </div>
 

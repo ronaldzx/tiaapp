@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { PostData } from './api/PostData';
-import {Redirect} from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import './Login.css';
 class Login extends Component {
     constructor(props) {
@@ -21,10 +21,10 @@ class Login extends Component {
                 var responseJson = result;
                 console.log(Object.keys(responseJson).length)
 
-                if ((Object.keys(responseJson).length)>0) {
+                if ((Object.keys(responseJson).length) > 0) {
                     sessionStorage.setItem('responseJson', responseJson);
                     this.setState({
-                        redirect:true
+                        redirect: true
                     })
                 } else {
                     console.log('login error :(')
@@ -41,15 +41,19 @@ class Login extends Component {
     }
 
     render() {
-        if (this.state.redirect){
-            return(<Redirect to={'/App'}/>)
+        if (this.state.redirect) {
+            return (<Redirect to={'/Home'} />)
+        }
+        if (sessionStorage.getItem('responseJson')) {
+            return (<Redirect to={'/Home'} />)
         }
         return (
             <div>
                 <div class="d-flex justify-content-center h-100">
                     <div class="card mt-5">
                         <div class="card-header">
-                            <h3>Sign In</h3>
+                            <h3>Inicio de Sesión</h3>
+                            <h5>Sistema de Ingresos y Salidas</h5>
                             <div class="d-flex justify-content-end social_icon">
                             </div>
                         </div>
@@ -78,11 +82,11 @@ class Login extends Component {
                         </div>
                         <div class="card-footer">
                             <div class="d-flex justify-content-center links">
-                                Login Sistema de Ingresos y Salida
+                                Si no tiene credenciales, póngase en contacto con el administrador
                                 </div>
                             <div class="d-flex justify-content-center">
-                                TIENDAS TIA
-                                </div>
+
+                            </div>
                         </div>
                     </div>
                 </div>
