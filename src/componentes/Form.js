@@ -9,6 +9,7 @@ var datos;
 var viaje = 0;
 var selected;
 var color = '';
+var usuario = 0;
 
 function enviarNoDeclarado(event) {
 
@@ -25,7 +26,8 @@ function enviarNoDeclarado(event) {
             descripcion: selected,
             orden: datos.get('orden'),
             cantidad: cantidad,
-            id: datos.get('descripcion')
+            id: datos.get('descripcion'),
+            usuario: usuario
         })
     })
 }
@@ -60,7 +62,8 @@ function enviarDatos(event) {
             descripcion: selected,
             orden: datos.get('orden'),
             cantidad: cantidad,
-            iProducto: datos.get("descripcion")
+            iProducto: datos.get("descripcion"),
+            usuario: usuario
         })
     })
     console.log('opss', datos.get("descripcion"))
@@ -84,7 +87,8 @@ class Form extends Component {
             saldo: 0,
             unidad: 0,
             redirect: false,
-            noDeclarado: 0
+            noDeclarado: 0,
+            usuario:0
         });
         this.mostrarOrdensExpress();
         this.handleAdd5 = this.handleAdd5.bind(this);
@@ -102,6 +106,15 @@ class Form extends Component {
             console.log('conecta2')
         } else {
             this.setState({ redirect: true })
+        }
+        let data = JSON.parse(sessionStorage.getItem("responseJson"));
+        {
+            data.map(props => {
+                this.setState({
+                    usuario: props.usu_iId
+                })
+                console.log('usuario:' + this.usuario)
+            })
         }
     }
     mostrarProductosFiltradoExpress() {
@@ -198,6 +211,7 @@ class Form extends Component {
             cantidad = Math.abs(this.state.quantity);
             var combo = document.getElementById("descripcion");
             selected = combo.options[combo.selectedIndex].text;
+            usuario = this.state.usuario;
             enviarDatos();
             total = total + cantidad; // obtengo la cantidad de productos ingresados y los almaceno en total
             this.setState({ total: total });
@@ -220,6 +234,7 @@ class Form extends Component {
         total = total + cantidad; // de igual manera acá, pero como es negativo automaticamente lo resta.
         var combo = document.getElementById("descripcion");
         selected = combo.options[combo.selectedIndex].text;
+        usuario = this.state.usuario;
         enviarDatos();
         this.setState({ total: total });
         this.setState({ cantidad: cantidad });
@@ -234,6 +249,7 @@ class Form extends Component {
         cantidad = Math.abs(this.state.quantity);
         var combo = document.getElementById("descripcion");
         selected = combo.options[combo.selectedIndex].text;
+        usuario = this.state.usuario;
         enviarNoDeclarado();
         total = total + cantidad; // obtengo la cantidad de productos ingresados y los almaceno en total
         this.setState({ cantidad: cantidad });

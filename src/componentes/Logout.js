@@ -27,10 +27,10 @@ class Logout extends Component {
       }
   
       return (
-        <div className="row" id="Body">
-          <div className="medium-12 columns">
+        <div id="Body">
+          {/* <div className="medium-12 columns"> */}
               <button type="button" className='btn btn-danger' onClick={this.logout}> Logout </button>
-          </div>      
+          {/* </div>       */}
         </div>
       );
     }

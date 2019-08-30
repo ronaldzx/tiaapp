@@ -8,27 +8,17 @@ import Consultas from './componentes/Consultas';
 import Routes from './Routes';
 
 class App extends Component {
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
     this.state={
       appName: "Banana",
       home: false
     }
   }
   render() {
-    // const App = () => (
-    //   <Switch>
-    //     <Route exact path="/" render={() => (
-    //       <Redirect to="/Home" />
-    //     )} />
-    //     <Route default path='/Home' component={Home} />
-    //     <Route default path='/Form' component={Form} />
-    //     <Route path='/Consultas' component={Consultas} />
-    //   </Switch>
-    // )
     return (
       <div className="App">
-        <Header></Header>
+        <Header/>
         <Routes name={this.state.appName}/>
         {/* <Form/> */}
         {/* <Consultas/> */}

@@ -22,7 +22,7 @@ class Login extends Component {
                 console.log(Object.keys(responseJson).length)
 
                 if ((Object.keys(responseJson).length) > 0) {
-                    sessionStorage.setItem('responseJson', responseJson);
+                    sessionStorage.setItem('responseJson', JSON.stringify(responseJson));
                     this.setState({
                         redirect: true
                     })

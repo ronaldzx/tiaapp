@@ -5,6 +5,7 @@ import Form from './Form';
 import Home from '../Home';
 var auxId = 0;
 var auxValor = 0;
+var usuario = 0;
 var datos = {
     idProducto: [],
     fValor: []
@@ -20,13 +21,14 @@ class Consultas extends Component {
             dbProductos: [],
             dbDespachoMultiple: [],
             iCantidad: 0,
-            cValue:'',
-            cliente : '',
-            cTipoDoc:'',
-            colorBoleta:'',
-            colorFactura:'',
-            colorFacturacion:'',
+            cValue: '',
+            cliente: '',
+            cTipoDoc: '',
+            colorBoleta: '',
+            colorFactura: '',
+            colorFacturacion: '',
             redirect: false,
+            usuario: 0,
             datos: {
                 idProducto: [],
                 fValor: []
@@ -45,21 +47,31 @@ class Consultas extends Component {
         this.getId = this.getId.bind(this);
         this.enviar = this.enviar.bind(this);
     }
-    componentDidMount(){
+    componentDidMount() {
         if (sessionStorage.getItem('responseJson')) {
             console.log('conecta2')
-        }else{
-            this.setState({redirect:true})
+        } else {
+            this.setState({ redirect: true })
+        }
+        let data = JSON.parse(sessionStorage.getItem("responseJson"));
+        {
+            data.map(props => {
+                this.setState({
+                    usuario: props.usu_iId
+                })
+                console.log('usuario:' + this.usuario)
+            })
         }
     }
     enviar(e) {
         e.preventDefault();
         console.log(e.target.id);
         console.log(this.state.datos.fValor);
-    }    
+    }
     ingresarDatos(id) {
         var Formulario = new FormData(document.getElementById('formulario'));
         var fSalen = Formulario.get(id);
+        usuario = this.state.usuario;
         fetch('/api/insertarConsultas', {
             method: "POST",
             headers: {
@@ -68,7 +80,8 @@ class Consultas extends Component {
             },
             body: JSON.stringify({
                 id: id,
-                salen: fSalen
+                salen: fSalen,
+                usuario: usuario
             })
         });
         const data = (async () => {
@@ -87,7 +100,7 @@ class Consultas extends Component {
                 dbProductos: content
             })
         })();
-        console.log('ID PRODUCTO: ', id, 'fSalen: ', fSalen, ' tipodoc: ',this.state.cTipoDoc)
+        console.log('ID PRODUCTO: ', id, 'fSalen: ', fSalen, ' tipodoc: ', this.state.cTipoDoc)
     }
     getId(e) {
         auxId = 0;
@@ -136,11 +149,11 @@ class Consultas extends Component {
                     dbDespachoMultiple
                 }, () => console.log('fetchea5 ', dbDespachoMultiple));
             });
-    }    
+    }
     async volverTotal(event) { // esto me regresa el total a 0 // esto se llama en el evento OnChange del combobox
         const bas = event.target.value;
         this.setState({
-            cTipoDoc:event.target.name
+            cTipoDoc: event.target.name
         })
         const data = (async () => {
             const rawResponse = await fetch('/api/productosSalida', {
@@ -166,7 +179,7 @@ class Consultas extends Component {
     }
     render() {
         if (this.state.redirect) {
-            return (<Redirect to={'./'}/>)
+            return (<Redirect to={'./'} />)
         }
         const Consultas = () => (
             <Switch>
@@ -180,7 +193,7 @@ class Consultas extends Component {
                         <form id="formulario" name="form" className="container">
                             <div className="row mt-4">
                                 <div className="col-3">
-                                    <select id="factura" name="factura" className={"custom-select "+this.state.colorFactura} onChange={this.volverTotal}>
+                                    <select id="factura" name="factura" className={"custom-select " + this.state.colorFactura} onChange={this.volverTotal}>
                                         <option>Seleccionar Factura</option>
                                         {this.state.dbFactura.map((props) => {
                                             return (
@@ -192,37 +205,37 @@ class Consultas extends Component {
                             </div>
                             <div className="row mt-4">
                                 <div className="col-3">
-                                    <select id="boleta" name="boleta" className={"custom-select "+this.state.colorBoleta} onChange={this.volverTotal}>
+                                    <select id="boleta" name="boleta" className={"custom-select " + this.state.colorBoleta} onChange={this.volverTotal}>
                                         <option>Seleccionar Boleta</option>
                                         {this.state.dbBoleta.map((props) => {
                                             return (
                                                 <option>{props.prosal_vcDocumento}</option>
                                             )
-                                        })}                                        
+                                        })}
                                     </select>
                                 </div>
                             </div>
                             <div className="row mt-4">
                                 <div className="col-3">
-                                    <select id="ordenfactura" name="ordenfactura" className={"custom-select "+this.state.colorFacturacion} onChange={this.volverTotal}>
+                                    <select id="ordenfactura" name="ordenfactura" className={"custom-select " + this.state.colorFacturacion} onChange={this.volverTotal}>
                                         <option>Seleccionar Orden Factura</option>
                                         {this.state.dbFacturacion.map((props) => {
                                             return (
                                                 <option>{props.prosal_vcDocumento}</option>
                                             )
-                                        })}                                        
+                                        })}
                                     </select>
                                 </div>
                             </div>
                             <div className="row mt-4">
                                 <div className="col-3">
-                                    <select id="ordenfactura" name="ordenfactura" className={"custom-select "+this.state.colorFacturacion} onChange={this.volverTotal}>
+                                    <select id="ordenfactura" name="ordenfactura" className={"custom-select " + this.state.colorFacturacion} onChange={this.volverTotal}>
                                         <option>Seleccionar Despacho Múltiple</option>
                                         {this.state.dbDespachoMultiple.map((props) => {
                                             return (
                                                 <option>{props.prosal_vcDocumento}</option>
                                             )
-                                        })}                                        
+                                        })}
                                     </select>
                                 </div>
                             </div>

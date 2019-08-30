@@ -3,7 +3,7 @@
 @import url('https://fonts.googleapis.com/css?family=Numans');
 
 html,body{
-background-image: url('img/almacen-bg.jpg');
+/* background-image: url('img/almacen-bg.jpg'); */
 background-size: cover;
 background-repeat: no-repeat;
 height: 100%;
@@ -92,4 +92,9 @@ color: white;
 
 .links a{
 margin-left: 4px;
+}
+
+@media screen and (max-width: 1140px) and (min-width: 1025px){ 
+
+    
 }

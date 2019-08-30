@@ -1,7 +1,13 @@
 .App {
   text-align: center;
-}
+  background-image: url('./img/almacen-bg.jpg');
 
+}
+/*imgHome*/
+.imagenHome{
+  width: 500px;
+  height: 300px;
+}
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 40vmin;
@@ -275,11 +281,6 @@
 .hideDiv{
   display: none;
 }
-/*imgHome*/
-.imagenHome{
-  width: 500px;
-  height: 300px;
-}
 .logoTia{
   margin: 50px 10px;
 }
@@ -292,6 +293,7 @@
 }
 
 /* 1024 PX*/
+
 @media screen and (max-width: 1140px) and (min-width: 1025px){ 
   .container-fluid{
     position: relative;
@@ -301,9 +303,17 @@
     border-radius: 35px;
     background-color: #ffffff;
   }
+  .imagenHome{
+    width: 500px;
+    height: 300px;
+  }
 }
 
 @media screen and (max-width: 1024px) and (min-width: 950px){ 
+  .imagenHome{
+    width: 360px;
+    height: 2/0px;
+  }
   .container-fluid{
     position: relative;
     margin-top: 60px;
@@ -314,6 +324,10 @@
   }
 }
 @media screen and (max-width: 949px) and (min-width: 769px){ 
+  .imagenHome{
+    width: 320px;
+    height: 270px;
+  }
   .container-fluid{
     position: relative;
     margin-top: 60px;
@@ -323,10 +337,25 @@
     background-color: #ffffff;
   }
 }
+
 /*768 - 720
   cambios: botones registrar y eliminar
 */
 @media screen and (max-width: 768px) and (min-width: 700px){ 
+  .hometitle{
+    font-size: 12px;
+  }
+  .logoTia{
+    margin: 10px 10px;
+    width:140px;
+  }
+  .imagenHome{
+    width: 250px;
+    height: 250px;
+  }
+  .homebtn{
+    font-size: 11px;
+  }
   .container-fluid{
     position: relative;
     margin-top: 60px;
@@ -413,7 +442,23 @@
     height: 60px;
   }
 }
+
 @media screen and (max-width: 699px) and (min-width: 620px){ 
+  .hometitle{
+    font-size: 12px;
+  }
+  .logoTia{
+    margin: 10px 10px;
+    width:140px;
+  }
+  .imagenHome{
+    width: 250px;
+    height: 250px;
+  }
+  .homebtn{
+    font-size: 11px;
+  }  
+  
   .container-fluid{
     position: relative;
     margin-top: 60px;
@@ -500,7 +545,22 @@
     height: 60px;
   }
 }
+
 @media screen and (max-width: 619px) and (min-width: 531px){ 
+  .hometitle{
+    font-size: 12px;
+  }
+  .logoTia{
+    margin: 10px 10px;
+    width:140px;
+  }
+  .imagenHome{
+    width: 250px;
+    height: 250px;
+  }
+  .homebtn{
+    font-size: 9px;
+  }
   .container-fluid{
     position: relative;
     margin-top: 60px;
@@ -594,6 +654,20 @@
 }
 }
 @media screen and (max-width: 530px) { 
+  .hometitle{
+    font-size: 12px;
+  }
+  .logoTia{
+    margin: 10px 10px;
+    width:140px;
+  }
+  .imagenHome{
+    width: 250px;
+    height: 250px;
+  }
+  .homebtn{
+    font-size: 9px;
+  }  
   .container-fluid{
     position: relative;
     margin-top: 60px;
