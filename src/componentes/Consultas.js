@@ -44,6 +44,7 @@ class Consultas extends Component {
         this.mostrarOrdensExpressFacturacion = this.mostrarOrdensExpressFacturacion.bind(this);
         this.mostrarOrdensExpressDespachoMultiple = this.mostrarOrdensExpressDespachoMultiple.bind(this);
         this.volverTotal = this.volverTotal.bind(this);
+        this.volverTotalMultiple = this.volverTotalMultiple.bind(this);
         this.getId = this.getId.bind(this);
         this.enviar = this.enviar.bind(this);
     }
@@ -151,9 +152,9 @@ class Consultas extends Component {
             });
     }
     async volverTotal(event) { // esto me regresa el total a 0 // esto se llama en el evento OnChange del combobox
-        const bas = event.target.value;
+        const bas = event.target.value; // 0
         this.setState({
-            cTipoDoc: event.target.name
+            cTipoDoc: event.target.name // ordenmultiple
         })
         const data = (async () => {
             const rawResponse = await fetch('/api/productosSalida', {
@@ -163,7 +164,7 @@ class Consultas extends Component {
                     'Content-type': 'application/json',
                 },
                 body: JSON.stringify({
-                    codigoDocumento: bas
+                    codigoDocumento: bas // 0
                 })
             });
             const content = await rawResponse.json();
@@ -177,6 +178,33 @@ class Consultas extends Component {
             console.log('gaa', this.state.dbProductos)
         })();
     }
+    async volverTotalMultiple(event) { // esto me regresa el total a 0 // esto se llama en el evento OnChange del combobox
+        const bas = event.target.value; // 0
+        this.setState({
+            cTipoDoc: event.target.name // ordenmultiple
+        })
+        const data = (async () => {
+            const rawResponse = await fetch('/api/productosSalidaMultiple', {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-type': 'application/json',
+                },
+                body: JSON.stringify({
+                    codigoDocumento: bas // 0
+                })
+            });
+            const content = await rawResponse.json();
+            this.setState({
+                dbProductos: content
+            })
+            this.state.dbProductos.map((props) => {
+                this.setState({ cliente: props.prosal_iCliente })
+                this.setState({ sku: props.prosal_vcProducto })
+            })
+            console.log('gaa', this.state.dbProductos)
+        })();
+    }    
     render() {
         if (this.state.redirect) {
             return (<Redirect to={'./'} />)
@@ -229,11 +257,11 @@ class Consultas extends Component {
                             </div>
                             <div className="row mt-4">
                                 <div className="col-3">
-                                    <select id="ordenfactura" name="ordenfactura" className={"custom-select " + this.state.colorFacturacion} onChange={this.volverTotal}>
+                                    <select id="ordenmultiple" name="ordenmultiple" className={"custom-select " + this.state.colorFacturacion} onChange={this.volverTotalMultiple}>
                                         <option>Seleccionar Despacho Múltiple</option>
                                         {this.state.dbDespachoMultiple.map((props) => {
                                             return (
-                                                <option>{props.prosal_vcDocumento}</option>
+                                                <option>{props.DM}</option>
                                             )
                                         })}
                                     </select>

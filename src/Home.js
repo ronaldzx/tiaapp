@@ -1,14 +1,8 @@
 import React, { Component } from 'react';
 import { Route, Switch, Link, Redirect } from 'react-router-dom';
-import Consultas from './componentes/Consultas';
-import Form from './componentes/Form';
-import App from './App';
 import ImgHome from './img/home.jpeg';
 import LogoTia from './img/logo_tia.png';
 import Logout from './componentes/Logout';
-import Login from './Login';
-import Header from './componentes/Header';
-import { PostData } from './api/PostData';
 class Home extends Component {
     constructor(props) {
         super(props);
@@ -38,12 +32,7 @@ class Home extends Component {
         if (this.state.redirect) {
             return (<Redirect to={'./'} />)
         }
-        const Home = () => (
-            <Switch>
-                <Route path='/Consultas' component={Consultas} />
-                <Route path='/Form' component={App} />
-            </Switch>
-        )
+
         return (
             <div className="container-fluid">
                 <div className="container d-flex mt-4 pb-5 ">
@@ -60,15 +49,22 @@ class Home extends Component {
                         <div className="row mt-1">
                             <div className="col">
                                 <Link to={'./Consultas'}>
-                                    <button type="button" className='btn btn-success homebtn'>Ir a Consultas</button>
+                                    <button type="button" className='btn btn-success homebtn'>Ir a Salidas</button>
                                 </Link>
                             </div>
                             <div className="col">
                                 <Link to={'./Form'}>
-                                    <button type="button" className='btn btn-success homebtn'>Ir a Formulario</button>
+                                    <button type="button" className='btn btn-success homebtn'>Ir a Ingresos</button>
                                 </Link>
                             </div>
                         </div>
+                        <div className="row mt-1">
+                            <div className="col">
+                                <Link to={'./GraficoBarra'}>
+                                    <button type="button" className='btn btn-success homebtn'>Ir a Gráficos</button>
+                                </Link>
+                            </div>
+                        </div>                        
                         <div className="row mt-1">
                             <div className="col">
                                 <Logout />
