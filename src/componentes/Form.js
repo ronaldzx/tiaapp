@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Route, Switch, Link, Redirect } from 'react-router-dom';
 import Consultas from './Consultas';
-import Home from '../Home';
 var cantidad = 0;
 var total = 0;
 var producto = '';

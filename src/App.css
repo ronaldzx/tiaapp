@@ -300,13 +300,193 @@
   margin-top:30px;
   display: flex;
   justify-content: space-between;
+}
+.gridPeriodos {
+  width:100%;
+  margin-top:40px;
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  grid-template-rows: 30px 30px;
+  grid-template-areas:
+    "titulo titulo" 
+    "periodo1 periodo2"
+    "periodo3 periodo4";
+}
+.gridPeriodos button {
+  border: 1px solid #fff;
+  background-color: gray;
+  text-align:center;
+  color: white;
+}
+.periodotitle{
+  grid-area:titulo;
+}
+.Periodo1{
+  grid-area:periodo1;
+}
+.Periodo2{
+  grid-area:periodo2;
+}
+.Periodo3{
+  grid-area:periodo3;
 } 
-.year-content{
-  
-}
-.month-content{
+.Periodo4{
+  grid-area:periodo4;
+} 
 
+.gridYears {
+  width:100%;
+  margin-top:40px;
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  grid-template-rows: 30px 30px;
+  grid-template-areas:
+    "titulo titulo titulo" 
+    "year1 year2 year3";
 }
+.gridYears button {
+  border: 1px solid #fff;
+  background-color: gray;
+  text-align:center;
+  color: white;
+}
+.yeartitle{
+  grid-area:titulo;
+}
+.year1{
+  grid-area:year1;
+}
+.year2{
+  grid-area:year2;
+}
+.year3{
+  grid-area:year3;
+}
+.gridMonths {
+  width:100%;
+  margin-top:40px;
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  grid-template-rows: 30px;
+  grid-template-areas:
+    "titulomes titulomes"
+    "mes1 mes2"
+    "mes3 mes4"
+    "mes5 mes6"
+    "mes7 mes8"
+    "mes9 mes10"
+    "mes11 mes12";
+}
+.gridMonths button {
+  border: 1px solid #fff;
+  background-color: gray;
+  text-align:center;
+  color: white;
+}
+.monthtitle{
+  grid-area:titulomes;
+}
+.mes1{
+  grid-area:mes1;
+}
+.mes2{
+  grid-area:mes2;
+}
+.mes3{
+  grid-area:mes3;
+}
+.mes4{
+  grid-area:mes4;
+}
+.mes5{
+  grid-area:mes5;
+}
+.mes6{
+  grid-area:mes6;
+}
+.mes7{
+  grid-area:mes7;
+}
+.mes8{
+  grid-area:mes8;
+}
+.mes9{
+  grid-area:mes9;
+}
+.mes10{
+  grid-area:mes10;
+}
+.mes11{
+  grid-area:mes11;
+}
+.mes12{
+  grid-area:mes12;
+}
+.wrapper {
+  width:100%;
+  margin-top:40px;
+  display: grid;
+  grid-template-columns: repeat(5,1fr);
+  grid-template-rows: 300px 200px;
+  grid-template-areas: 
+    "grafico1 grafico1 grafico2 grafico2 filtro"
+    "grafico3 grafico3 grafico3 grafico3 filtro";
+}
+.wrapper .item1 {
+  display:flex;
+  justify-content: center;
+  grid-area: grafico1;
+}
+.wrapper .item2 {
+  display:flex;
+  justify-content: center;
+  grid-area: grafico2;
+}
+.wrapper .item3 {
+  display:flex;
+  justify-content: center;
+  grid-area: grafico3;
+}
+.wrapper .item4 {
+  display:flex;
+  justify-content: center;
+  grid-area: filtro;
+}
+.item3 canvas{
+  height:300px;
+}
+.gridLineal {
+  width:100%;
+  margin-top:40px;
+  display: grid;
+  grid-template-columns: repeat(3,1 fr); 
+  grid-template-areas: 
+    "item1 item1 item3"
+    "item1 item1 item3"
+    "item2 item2 item4"
+    "item2 item2 item4";
+}
+.gridLineal .item1{
+  display:flex;
+  justify-content: center;
+  grid-area: item1;
+}
+.gridLineal .item2{
+  display:flex;
+  justify-content: center;
+  grid-area: item2;
+}
+.gridLineal .item3{
+  display:flex;
+  justify-content: center;
+  grid-area: item3;
+}
+.gridLineal .item4{
+  display:flex;
+  justify-content: center;
+  grid-area: item4;
+}
+
 /*display none*/
 .hideDiv{
   display: none;

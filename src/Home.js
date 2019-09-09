@@ -64,6 +64,11 @@ class Home extends Component {
                                     <button type="button" className='btn btn-success homebtn'>Ir a Gráficos</button>
                                 </Link>
                             </div>
+                            <div className="col">
+                                <Link to={'./GraficoLineal'}>
+                                    <button type="button" className='btn btn-success homebtn'>Ir a Gráficos Lineales</button>
+                                </Link>
+                            </div>
                         </div>                        
                         <div className="row mt-1">
                             <div className="col">
